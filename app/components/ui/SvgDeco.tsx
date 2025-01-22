@@ -38,7 +38,7 @@ const SvgDeco = ({ direction, score, fontSize }: Props) => {
           clipRule="evenodd"
           d="M1 67.0325V201.069L33.6001 247.39H208.707L230.079 274H373.421H376.83C388.661 217.634 399.454 91.5439 290.564 1H284.564H145.18L116.458 24.9605H37.845L1 67.0325Z"
           stroke="#E0E0E0"
-          stroke-width="0.5"
+          strokeWidth="0.5"
         />
         <circle
           cx="2.5"
@@ -223,9 +223,9 @@ const SvgDeco = ({ direction, score, fontSize }: Props) => {
             width="383.5"
             height="275.5"
             filterUnits="userSpaceOnUse"
-            color-interpolation-filters="sRGB"
+            colorInterpolationFilters="sRGB"
           >
-            <feFlood flood-opacity="0" result="BackgroundImageFix" />
+            <feFlood floodOpacity="0" result="BackgroundImageFix" />
             <feBlend
               mode="normal"
               in="SourceGraphic"
