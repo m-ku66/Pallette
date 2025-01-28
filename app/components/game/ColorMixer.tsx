@@ -1,15 +1,11 @@
 import React, { useState, useRef, useEffect } from "react";
+import { RGB } from "@/app/types";
 import { motion } from "framer-motion";
+import useGameStore from "../../store/gameStore";
 
 interface Coordinate {
   x: number;
   y: number;
-}
-
-interface RGB {
-  r: number;
-  g: number;
-  b: number;
 }
 
 interface CircularSliderProps {
@@ -18,6 +14,8 @@ interface CircularSliderProps {
   color: string;
   radius: number;
   size: number;
+  channel: keyof RGB;
+  setActiveChannel: (channel: keyof RGB | null) => void;
 }
 
 interface ColorMixerProps {
@@ -30,6 +28,8 @@ const CircularSlider: React.FC<CircularSliderProps> = ({
   color,
   radius,
   size,
+  channel,
+  setActiveChannel,
 }) => {
   const sliderRef = useRef<SVGGElement>(null);
   const isDragging = useRef<boolean>(false);
@@ -94,10 +94,12 @@ const CircularSlider: React.FC<CircularSliderProps> = ({
 
   const handleMouseDown = (): void => {
     isDragging.current = true;
+    setActiveChannel(channel);
   };
 
   const handleMouseUp = (): void => {
     isDragging.current = false;
+    setActiveChannel(null);
   };
 
   const handleMouseMove = (e: MouseEvent): void => {
@@ -172,6 +174,8 @@ const CircularSlider: React.FC<CircularSliderProps> = ({
 };
 
 const ColorMixer: React.FC<ColorMixerProps> = ({ size = 400 }) => {
+  const setActiveChannel = useGameStore((state) => state.setActiveChannel);
+  // const updateCurrentColor = useGameStore((state) => state.updateCurrentColor);
   const [currentColor, setCurrentColor] = useState<RGB>({
     r: 0,
     g: 0,
@@ -223,6 +227,8 @@ const ColorMixer: React.FC<ColorMixerProps> = ({ size = 400 }) => {
             color={sliderColors.r}
             radius={size / 2.06}
             size={size}
+            channel="r"
+            setActiveChannel={setActiveChannel}
           />
           <CircularSlider
             value={currentColor.g}
@@ -230,6 +236,8 @@ const ColorMixer: React.FC<ColorMixerProps> = ({ size = 400 }) => {
             color={sliderColors.g}
             radius={size / 2.3}
             size={size}
+            channel="g"
+            setActiveChannel={setActiveChannel}
           />
           <CircularSlider
             value={currentColor.b}
@@ -237,6 +245,8 @@ const ColorMixer: React.FC<ColorMixerProps> = ({ size = 400 }) => {
             color={sliderColors.b}
             radius={size / 2.6}
             size={size}
+            channel="b"
+            setActiveChannel={setActiveChannel}
           />
         </svg>
       </div>
