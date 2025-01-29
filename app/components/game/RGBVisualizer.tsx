@@ -1,15 +1,44 @@
+"use client";
 import React from "react";
 import Progress from "../ui/Progress";
 import useGameStore from "../../store/gameStore";
 import { RGB } from "../../types/index";
 import Image from "next/image";
 
-type RGBVisualizerProps = {
-  currentColor: RGB;
-};
+const ChannelDisplay = React.memo(
+  ({ value, color }: { value: number; color: string }) => {
+    return (
+      <div className="relative h-full flex gap-2">
+        <Progress
+          value={(value / 255) * 100}
+          orientation="vertical"
+          color={color}
+          background={false}
+        />
+        <Image
+          src="/meter.svg"
+          width={20}
+          height={20}
+          className="h-full object-cover"
+          alt=""
+        />
+      </div>
+    );
+  }
+);
 
-const RGBVisualizer = ({ currentColor }: RGBVisualizerProps) => {
-  const { activeChannel } = useGameStore();
+ChannelDisplay.displayName = "ChannelDisplay";
+
+const ValueDisplay = React.memo(({ value }: { value: number }) => (
+  <span className="w-full flex justify-end px-1 nico mt-2 text-sm font-medium text-center">
+    {value}
+  </span>
+));
+
+ValueDisplay.displayName = "ValueDisplay";
+
+const RGBVisualizer = React.memo(({ currentColor }: { currentColor: RGB }) => {
+  const activeChannel = useGameStore((state) => state.activeChannel);
 
   const getChannelColor = (channel: keyof RGB | null) => {
     switch (channel) {
@@ -26,55 +55,25 @@ const RGBVisualizer = ({ currentColor }: RGBVisualizerProps) => {
 
   if (activeChannel) {
     const current = currentColor[activeChannel];
-    const fillPercentage = (current / 255) * 100;
-
     return (
       <div className="w-[10%] h-[30%] flex flex-col items-center justify-center">
-        <div className="relative h-full flex gap-2">
-          <Progress
-            value={fillPercentage}
-            orientation="vertical"
-            color={getChannelColor(activeChannel)}
-            background={false}
-          />
-          <Image
-            src={"/meter.svg"}
-            width={20}
-            height={20}
-            className="h-full object-cover"
-            alt=""
-          />
-        </div>
-        <span className="w-full flex justify-end px-1 nico mt-2 text-sm font-medium text-center">
-          {current}
-        </span>
+        <ChannelDisplay
+          value={current}
+          color={getChannelColor(activeChannel)}
+        />
+        <ValueDisplay value={current} />
       </div>
     );
   }
 
-  // Default state
   return (
     <div className="w-[10%] h-[30%] flex flex-col items-center justify-center">
-      <div className="relative h-full flex gap-2">
-        <Progress
-          value={0}
-          orientation="vertical"
-          color="rgba(0, 0, 0, 0.5)"
-          background={false}
-        />
-        <Image
-          src={"/meter.svg"}
-          width={20}
-          height={20}
-          className="h-full object-cover"
-          alt=""
-        />
-      </div>
-      <span className="w-full flex justify-end px-1 nico mt-2 text-sm font-medium text-center">
-        0
-      </span>
+      <ChannelDisplay value={0} color="rgba(0, 0, 0, 0.5)" />
+      <ValueDisplay value={0} />
     </div>
   );
-};
+});
+
+RGBVisualizer.displayName = "RGBVisualizer";
 
 export default RGBVisualizer;
