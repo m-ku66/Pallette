@@ -2,9 +2,14 @@ import React from "react";
 import Progress from "../ui/Progress";
 import useGameStore from "../../store/gameStore";
 import { RGB } from "../../types/index";
+import Image from "next/image";
 
-const RGBVisualizer = () => {
-  const { currentColor, targetColor, activeChannel } = useGameStore();
+type RGBVisualizerProps = {
+  currentColor: RGB;
+};
+
+const RGBVisualizer = ({ currentColor }: RGBVisualizerProps) => {
+  const { activeChannel } = useGameStore();
 
   const getChannelColor = (channel: keyof RGB | null) => {
     switch (channel) {
@@ -21,23 +26,26 @@ const RGBVisualizer = () => {
 
   if (activeChannel) {
     const current = currentColor[activeChannel];
-    const target = targetColor[activeChannel];
     const fillPercentage = (current / 255) * 100;
 
     return (
-      <div className="w-[5%] h-[30%] flex flex-col items-center justify-center">
-        <div className="relative h-full w-2">
+      <div className="w-[10%] h-[30%] flex flex-col items-center justify-center">
+        <div className="relative h-full flex gap-2">
           <Progress
             value={fillPercentage}
             orientation="vertical"
             color={getChannelColor(activeChannel)}
+            background={false}
           />
-          <div
-            className="absolute left-0 w-full h-0.5 bg-black"
-            style={{ bottom: `${(target / 255) * 100}%` }}
+          <Image
+            src={"/meter.svg"}
+            width={20}
+            height={20}
+            className="h-full object-cover"
+            alt=""
           />
         </div>
-        <span className="nico mt-2 text-sm font-medium text-center">
+        <span className="w-full flex justify-end px-1 nico mt-2 text-sm font-medium text-center">
           {current}
         </span>
       </div>
@@ -46,15 +54,25 @@ const RGBVisualizer = () => {
 
   // Default state
   return (
-    <div className="w-[5%] h-[30%] flex flex-col items-center justify-center">
-      <div className="relative h-full w-2">
-        <Progress value={0} orientation="vertical" color="rgba(0, 0, 0, 0.5)" />
-        <div
-          className="absolute left-0 w-full h-0.5 bg-black"
-          style={{ bottom: "0%" }}
+    <div className="w-[10%] h-[30%] flex flex-col items-center justify-center">
+      <div className="relative h-full flex gap-2">
+        <Progress
+          value={0}
+          orientation="vertical"
+          color="rgba(0, 0, 0, 0.5)"
+          background={false}
+        />
+        <Image
+          src={"/meter.svg"}
+          width={20}
+          height={20}
+          className="h-full object-cover"
+          alt=""
         />
       </div>
-      <span className="nico mt-2 text-sm font-medium text-center">0</span>
+      <span className="w-full flex justify-end px-1 nico mt-2 text-sm font-medium text-center">
+        0
+      </span>
     </div>
   );
 };

@@ -15,4 +15,12 @@ export interface GameStore {
   difficulty: number;
   streak: number;
   activeChannel: keyof RGB | null;
+  winStreak: number;
+  maxDifficulty: number;
+  losingStreak: number;
+}
+
+export interface CharacterState {
+  emotion: "neutral" | "surprised" | "disappointed" | "happy";
+  state: "neutral" | "victory" | "defeat";
 }

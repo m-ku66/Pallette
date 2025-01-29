@@ -1,21 +1,19 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
-
-interface CharacterState {
-  emotion: "neutral" | "surprised" | "disappointed" | "happy";
-  state: "neutral" | "victory" | "defeat";
-}
+import { CharacterState } from "../../types/index";
 
 type Props = {
   targetColor: { r: number; g: number; b: number };
+  characterState: CharacterState;
+  setCharacterState: React.Dispatch<React.SetStateAction<CharacterState>>;
 };
 
-const Character = ({ targetColor }: Props) => {
-  const [characterState, setCharacterState] = useState<CharacterState>({
-    emotion: "neutral",
-    state: "neutral",
-  });
+const Character = ({
+  targetColor,
+  characterState,
+  setCharacterState,
+}: Props) => {
   const [clickable, setClickable] = useState(true);
 
   const renderMouth = () => {
@@ -113,7 +111,7 @@ const Character = ({ targetColor }: Props) => {
     }, 2000);
   };
 
-  const ANIM_DURATION = 1;
+  const ANIM_DURATION = 2;
 
   return (
     <motion.div
@@ -121,7 +119,7 @@ const Character = ({ targetColor }: Props) => {
         scaleY: ["102%", "100%", "102%"],
       }}
       transition={{
-        duration: ANIM_DURATION + 2,
+        duration: ANIM_DURATION,
         repeat: Infinity,
         repeatType: "reverse",
         ease: "easeInOut",
@@ -174,7 +172,7 @@ const Character = ({ targetColor }: Props) => {
       <motion.div
         animate={{ bottom: ["0%", "-1%", "0%"] }}
         transition={{
-          duration: ANIM_DURATION + 2,
+          duration: ANIM_DURATION,
           repeat: Infinity,
           repeatType: "reverse",
           ease: "easeInOut",
@@ -194,7 +192,7 @@ const Character = ({ targetColor }: Props) => {
       <motion.div
         animate={{ bottom: ["0%", "-1%", "0%"] }}
         transition={{
-          duration: ANIM_DURATION + 2.1,
+          duration: ANIM_DURATION,
           repeat: Infinity,
           repeatType: "reverse",
           ease: "easeInOut",
@@ -317,12 +315,14 @@ const Character = ({ targetColor }: Props) => {
 
       {/* BANGS */}
       <motion.div
-        animate={{ bottom: ["0%", "0%", "-0.5%", "-1%", "-0.5%", "0%", "0%"] }}
+        animate={{
+          bottom: ["0%", "-0.5%", "-1%", "-1%", "-1%", "-0.5%", "0%"],
+        }}
         transition={{
-          duration: ANIM_DURATION + 2.2,
+          duration: ANIM_DURATION,
           repeat: Infinity,
-          repeatType: "reverse",
-          ease: "easeInOut",
+          repeatType: "mirror",
+          ease: "easeIn",
         }}
         className="absolute w-full h-full"
       >
@@ -348,9 +348,9 @@ const Character = ({ targetColor }: Props) => {
 
       {/* HAND */}
       <motion.div
-        animate={{ bottom: ["0%", "-1%", "-2%", "-1%", "0%"] }}
+        animate={{ bottom: ["0%", "-2%", "0%"] }}
         transition={{
-          duration: ANIM_DURATION + 3,
+          duration: ANIM_DURATION + 1,
           repeat: Infinity,
           repeatType: "reverse",
           ease: "easeInOut",

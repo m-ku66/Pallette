@@ -2,6 +2,8 @@ import React, { useState, useRef, useEffect } from "react";
 import { RGB } from "@/app/types";
 import { motion } from "framer-motion";
 import useGameStore from "../../store/gameStore";
+import calculateColorDifference from "./ColorCalculator";
+import { CharacterState } from "@/app/types";
 
 interface Coordinate {
   x: number;
@@ -20,6 +22,9 @@ interface CircularSliderProps {
 
 interface ColorMixerProps {
   size?: number;
+  currentColor: RGB;
+  setCurrentColor: React.Dispatch<React.SetStateAction<RGB>>;
+  setCharacterState: React.Dispatch<React.SetStateAction<CharacterState>>;
 }
 
 const CircularSlider: React.FC<CircularSliderProps> = ({
@@ -164,7 +169,7 @@ const CircularSlider: React.FC<CircularSliderProps> = ({
         cx={end.x}
         cy={end.y}
         r="8"
-        fill={color}
+        fill={channel === "r" ? "red" : channel === "g" ? "green" : "blue"}
         stroke="#F8F8F8"
         strokeWidth="4"
         className="drop-shadow-md cursor-pointer"
@@ -173,14 +178,30 @@ const CircularSlider: React.FC<CircularSliderProps> = ({
   );
 };
 
-const ColorMixer: React.FC<ColorMixerProps> = ({ size = 400 }) => {
+const ColorMixer: React.FC<ColorMixerProps> = ({
+  size = 400,
+  currentColor,
+  setCurrentColor,
+  setCharacterState,
+}) => {
   const setActiveChannel = useGameStore((state) => state.setActiveChannel);
-  // const updateCurrentColor = useGameStore((state) => state.updateCurrentColor);
-  const [currentColor, setCurrentColor] = useState<RGB>({
-    r: 0,
-    g: 0,
-    b: 0,
-  });
+  const {
+    targetColor,
+    difficulty,
+    updateScore,
+    updateStreak,
+    streak,
+    startNewRound,
+    resetGame,
+    winStreak,
+    updateWinStreak,
+    increaseDifficulty,
+    updateDifficulty,
+    score,
+    losingStreak,
+    updateLosingStreak,
+  } = useGameStore();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleColorChange = (color: keyof RGB, value: number): void => {
     setCurrentColor((prev) => ({
@@ -199,12 +220,96 @@ const ColorMixer: React.FC<ColorMixerProps> = ({ size = 400 }) => {
     b: `rgb(0, 0, ${currentColor.b})`,
   };
 
+  const handleSubmit = () => {
+    if (isSubmitting) return;
+    setIsSubmitting(true);
+    // Calculate difference and accuracy
+    const diff = calculateColorDifference(targetColor, currentColor);
+    const maxDiff = Math.sqrt(Math.pow(255, 2) * 3); // Maximum possible difference
+    const accuracy = 100 - (diff / maxDiff) * 100;
+
+    // Adjust these thresholds based on difficulty
+    const perfectThreshold = 95 - difficulty * 2; // Gets harder as difficulty increases
+    const goodThreshold = 85 - difficulty * 2;
+
+    if (accuracy >= perfectThreshold) {
+      // Perfect match!
+      updateScore(10 + Math.floor(accuracy - perfectThreshold));
+      updateStreak(streak + 1);
+      updateWinStreak(1);
+
+      if (winStreak > 0 && winStreak % 3 === 0) {
+        // Every 3 perfect matches
+        increaseDifficulty();
+      }
+
+      setCharacterState((prev) => ({
+        ...prev,
+        emotion: "surprised",
+        state: "victory",
+      }));
+    } else if (accuracy >= goodThreshold) {
+      // Good match
+      updateScore(5);
+      updateStreak(streak + 1);
+      updateWinStreak(1);
+
+      if (winStreak > 0 && winStreak % 5 === 0) {
+        // Every 5 good matches
+        increaseDifficulty();
+      }
+
+      setCharacterState((prev) => ({
+        ...prev,
+        emotion: "happy",
+        state: "victory",
+      }));
+    } else {
+      // Miss
+      updateStreak(0); // Reset streak on miss
+      updateWinStreak(winStreak - winStreak); // Reset win streak on miss
+      updateScore(score === 0 ? 0 : -1); // Decrement score on miss
+      updateLosingStreak(1);
+      updateDifficulty(0);
+      setCharacterState((prev) => ({
+        ...prev,
+        emotion: "disappointed",
+        state: "defeat",
+      }));
+    }
+
+    setCurrentColor({ r: 0, g: 0, b: 0 });
+
+    // Add a small delay before allowing new submissions
+    setTimeout(() => {
+      setIsSubmitting(false);
+      setCharacterState((prev) => ({
+        ...prev,
+        state: "neutral",
+        emotion: "neutral",
+      }));
+      startNewRound();
+
+      // If the game is over, reload the page
+      if (losingStreak === 3) {
+        resetGame();
+        updateDifficulty(0);
+        location.reload();
+      }
+    }, 1000);
+  };
+
   const diamondSize = size / 14;
 
   return (
     <div className="w-full h-full flex flex-col gap-0 items-center justify-center bg-transparent pb-20">
       <div className="relative">
-        <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
+        <motion.svg
+          style={{ border: "none", outline: "none" }}
+          width={size}
+          height={size}
+          viewBox={`0 0 ${size} ${size}`}
+        >
           <circle
             cx={size / 2}
             cy={size / 2}
@@ -218,7 +323,7 @@ const ColorMixer: React.FC<ColorMixerProps> = ({ size = 400 }) => {
             r={size / 4.5}
             fill={`rgb(${currentColor.r}, ${currentColor.g}, ${currentColor.b})`}
             onClick={handleReset}
-            className="hover:scale-110 cursor-pointer origin-center duration-150 active:scale-95"
+            className="cursor-pointer origin-center hover:scale-105 active:scale-95 transition-transform duration-200 ease-in-out"
             style={{ outline: "none" }}
           />
           <CircularSlider
@@ -248,13 +353,16 @@ const ColorMixer: React.FC<ColorMixerProps> = ({ size = 400 }) => {
             channel="b"
             setActiveChannel={setActiveChannel}
           />
-        </svg>
+        </motion.svg>
       </div>
       <motion.div
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
         style={{ width: `${size / 6}px` }}
-        className="flex justify-center items-center rounded-full aspect-square bg-[#F8F8F8] drop-shadow-lg cursor-pointer"
+        onClick={handleSubmit}
+        className={`flex justify-center items-center rounded-full aspect-square 
+          bg-[#F8F8F8] drop-shadow-lg cursor-pointer
+          ${isSubmitting ? "opacity-50" : ""}`}
       >
         <svg
           width={diamondSize}

@@ -14,27 +14,37 @@ interface GameActions {
   updateStreak: (streak: number) => void;
   setActiveChannel: (channel: keyof RGB | null) => void;
   resetGame: () => void;
+  startNewRound: () => void;
+  increaseDifficulty: () => void;
+  updateWinStreak: (amount: number) => void;
+  updateLosingStreak: (amount: number) => void;
 }
 
 const useGameStore = create<GameStore & GameActions>((set) => ({
   // Initial state
   score: 0,
-  timeLeft: 30,
+  timeLeft: 40,
   currentColor: { r: 0, g: 0, b: 0 },
   targetColor: { r: 0, g: 0, b: 0 },
   gameState: "title",
   difficulty: 1,
   streak: 0,
   activeChannel: null,
+  winStreak: 0,
+  maxDifficulty: 5,
+  losingStreak: 0,
 
   // Actions
   startGame: () =>
     set(() => ({
       gameState: "playing",
       score: 0,
-      timeLeft: 30,
+      timeLeft: 40,
       difficulty: 1,
       streak: 0,
+      activeChannel: null,
+      winStreak: 0,
+      losingStreak: 0,
     })),
 
   endGame: () => set(() => ({ gameState: "gameOver" })),
@@ -43,20 +53,45 @@ const useGameStore = create<GameStore & GameActions>((set) => ({
 
   resumeGame: () => set(() => ({ gameState: "playing" })),
 
-  // updateCurrentColor: (color) => set(() => ({ currentColor: color })),
   updateCurrentColor: (color) =>
     set((state) => ({
       currentColor: { ...state.currentColor, ...color },
     })),
 
+  updateWinStreak: (amount: number) =>
+    set((state) => ({ winStreak: state.winStreak + amount })),
+
+  updateLosingStreak: (amount: number) =>
+    set((state) => ({ losingStreak: state.losingStreak + amount })),
+
+  increaseDifficulty: () =>
+    set((state) => ({
+      difficulty: Math.min(state.difficulty + 1, state.maxDifficulty),
+    })),
+
   generateTargetColor: () =>
-    set(() => ({
-      targetColor: {
+    set((state) => {
+      // Base randomization
+      const baseColor = {
         r: Math.floor(Math.random() * 256),
         g: Math.floor(Math.random() * 256),
         b: Math.floor(Math.random() * 256),
-      },
-    })),
+      };
+
+      // As difficulty increases, we'll make colors more varied
+      if (state.difficulty > 1) {
+        // Ensure at least one channel has a value below 100 or above 200
+        const channel = Math.floor(Math.random() * 3);
+        const channels: (keyof RGB)[] = ["r", "g", "b"];
+
+        baseColor[channels[channel]] =
+          Math.random() > 0.5
+            ? Math.floor(Math.random() * 100) // Dark value
+            : Math.floor(Math.random() * 55) + 200; // Bright value
+      }
+
+      return { targetColor: baseColor };
+    }),
 
   updateScore: (points) => set((state) => ({ score: state.score + points })),
 
@@ -72,13 +107,27 @@ const useGameStore = create<GameStore & GameActions>((set) => ({
   resetGame: () =>
     set(() => ({
       score: 0,
-      timeLeft: 30,
+      timeLeft: 40,
       currentColor: { r: 0, g: 0, b: 0 },
       targetColor: { r: 0, g: 0, b: 0 },
       gameState: "title",
       difficulty: 1,
       streak: 0,
     })),
+
+  startNewRound: () =>
+    set((state) => {
+      const newTimeLimit = Math.max(20, 40 - state.difficulty * 2); // Reduces time as difficulty increases
+      return {
+        currentColor: { r: 0, g: 0, b: 0 },
+        timeLeft: newTimeLimit,
+        targetColor: {
+          r: Math.floor(Math.random() * 256),
+          g: Math.floor(Math.random() * 256),
+          b: Math.floor(Math.random() * 256),
+        },
+      };
+    }),
 }));
 
 export default useGameStore;

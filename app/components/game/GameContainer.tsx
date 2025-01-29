@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import SvgDeco from "../ui/SvgDeco";
 import Menu from "../ui/Menu";
 import AudioController from "../ui/AudioController";
@@ -9,9 +9,20 @@ import RGBVisualizer from "./RGBVisualizer";
 import useGameStore from "../../store/gameStore";
 import { motion } from "framer-motion";
 import Character from "./Character";
+import { CharacterState } from "../../types/index";
+import { RGB } from "../../types/index";
 
 const GameContainer = () => {
   const { gameState, generateTargetColor } = useGameStore();
+  const [currentColor, setCurrentColor] = useState<RGB>({
+    r: 0,
+    g: 0,
+    b: 0,
+  });
+  const [characterState, setCharacterState] = useState<CharacterState>({
+    emotion: "neutral",
+    state: "neutral",
+  });
 
   useEffect(() => {
     if (gameState === "playing") {
@@ -23,15 +34,24 @@ const GameContainer = () => {
 
   return (
     <div className="overflow-hidden container max-w-full h-screen flex justify-center items-center relative px-8 pt-4 pb-8 bg-white text-neutral-900">
-      <Character targetColor={useGameStore.getState().targetColor} />
+      <Character
+        targetColor={useGameStore.getState().targetColor}
+        characterState={characterState}
+        setCharacterState={setCharacterState}
+      />
       <div className="w-[30%] h-full flex flex-col items-start justify-between">
-        {/* Timer */}
-        <Timer />
+        Timer
+        {/* <Timer /> */}
         <SvgDeco direction="left" score={false} />
       </div>
 
       <div className="w-[40%] h-full flex flex-col items-center justify-center relative">
-        <ColorMixer size={500} />
+        <ColorMixer
+          size={500}
+          currentColor={currentColor}
+          setCurrentColor={setCurrentColor}
+          setCharacterState={setCharacterState}
+        />
         <motion.div
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
@@ -43,7 +63,7 @@ const GameContainer = () => {
 
       <div className="w-[30%] h-full flex flex-col items-end justify-between">
         <Menu />
-        <RGBVisualizer />
+        <RGBVisualizer currentColor={currentColor} />
         <SvgDeco direction="right" score={true} fontSize={4} />
       </div>
     </div>

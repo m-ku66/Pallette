@@ -5,6 +5,7 @@ interface ProgressProps {
   className?: string;
   color?: string;
   orientation?: "horizontal" | "vertical";
+  background?: boolean;
 }
 
 const Progress = ({
@@ -12,11 +13,16 @@ const Progress = ({
   className = "",
   color = "rgba(0, 0, 0, 0.5)",
   orientation = "horizontal",
+  background = true,
 }: ProgressProps) => {
   return (
     <>
       {orientation === "horizontal" ? (
-        <div className={`w-full h-2 bg-gray-300 rounded-full ${className}`}>
+        <div
+          className={`w-full h-2 ${
+            background ? "bg-gray-300" : "bg-transparent"
+          } rounded-full ${className}`}
+        >
           <div
             className={`h-full rounded-full transition-all duration-300`}
             style={{
@@ -26,7 +32,11 @@ const Progress = ({
           />
         </div>
       ) : (
-        <div className={`w-2 h-full bg-gray-300 rounded-full ${className}`}>
+        <div
+          className={`w-2 h-full ${
+            background ? "bg-gray-300" : "bg-transparent"
+          } rounded-full ${className}`}
+        >
           <div
             className={`w-full rounded-full transition-all duration-300`}
             style={{
