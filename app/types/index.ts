@@ -15,7 +15,6 @@ export interface GameStore {
   difficulty: number;
   streak: number;
   activeChannel: keyof RGB | null;
-  winStreak: number;
   maxDifficulty: number;
   losingStreak: number;
   latestAccuracy: string;

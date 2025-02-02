@@ -4,7 +4,6 @@ import { RGB, GameStore } from "../types";
 interface GameActions {
   startGame: () => void;
   endGame: () => void;
-  resumeGame: () => void;
   updateCurrentColor: (color: RGB) => void;
   generateTargetColor: () => void;
   updateScore: (points: number) => void;
@@ -15,7 +14,6 @@ interface GameActions {
   resetGame: () => void;
   startNewRound: () => void;
   increaseDifficulty: () => void;
-  updateWinStreak: (amount: number) => void;
   updateLosingStreak: (amount: number) => void;
   updateLatestAccuracy: (accuracy: string) => void;
   updateSubmissionFlag: (flag: boolean) => void;
@@ -32,7 +30,6 @@ const useGameStore = create<GameStore & GameActions>((set) => ({
   difficulty: 0,
   streak: 0,
   activeChannel: null,
-  winStreak: 0,
   maxDifficulty: 5,
   losingStreak: 0,
   latestAccuracy: " ",
@@ -48,24 +45,17 @@ const useGameStore = create<GameStore & GameActions>((set) => ({
       difficulty: 0,
       streak: 0,
       activeChannel: null,
-      winStreak: 0,
       losingStreak: 0,
     })),
 
   endGame: () => set(() => ({ gameState: "gameOver" })),
-
-  resumeGame: () => set(() => ({ gameState: "playing" })),
 
   updateCurrentColor: (color) =>
     set((state) => ({
       currentColor: { ...state.currentColor, ...color },
     })),
 
-  updateWinStreak: (amount: number) =>
-    set((state) => ({ winStreak: state.winStreak + amount })),
-
-  updateLosingStreak: (amount: number) =>
-    set((state) => ({ losingStreak: state.losingStreak + amount })),
+  updateLosingStreak: (amount) => set(() => ({ losingStreak: amount })),
 
   increaseDifficulty: () =>
     set((state) => ({
@@ -83,14 +73,24 @@ const useGameStore = create<GameStore & GameActions>((set) => ({
 
       // As difficulty increases, make colors more varied
       if (state.difficulty > 1) {
-        // Ensure at least one channel has a value below 100 or above 200
-        const channel = Math.floor(Math.random() * 3);
+        // Number of channels to modify increases with difficulty
+        const channelsToModify = Math.min(Math.ceil(state.difficulty / 2), 3);
         const channels: (keyof RGB)[] = ["r", "g", "b"];
 
-        baseColor[channels[channel]] =
-          Math.random() > 0.5
-            ? Math.floor(Math.random() * 100) // Dark value
-            : Math.floor(Math.random() * 55) + 200; // Bright value
+        // Shuffle channels array to randomize which ones get modified
+        const shuffledChannels = [...channels].sort(() => Math.random() - 0.5);
+
+        // Modify multiple channels based on difficulty
+        for (let i = 0; i < channelsToModify; i++) {
+          // As difficulty increases, make the dark values darker and bright values brighter
+          const darkMax = Math.max(10, 100 - state.difficulty * 15); // Gets darker with difficulty
+          const brightMin = Math.min(255, 200 + state.difficulty * 10); // Gets brighter with difficulty
+
+          baseColor[shuffledChannels[i]] =
+            Math.random() > 0.5
+              ? Math.floor(Math.random() * darkMax) // Dark value
+              : Math.floor(Math.random() * (255 - brightMin)) + brightMin; // Bright value
+        }
       }
 
       return { targetColor: baseColor };
@@ -123,7 +123,6 @@ const useGameStore = create<GameStore & GameActions>((set) => ({
       difficulty: 0,
       streak: 0,
       activeChannel: null,
-      winStreak: 0,
       losingStreak: 0,
       latestAccuracy: " ",
       submissionFlag: false,
@@ -132,7 +131,7 @@ const useGameStore = create<GameStore & GameActions>((set) => ({
 
   startNewRound: () =>
     set((state) => {
-      const newTimeLimit = Math.max(30, 40 - state.difficulty * 4); // Reduces time as difficulty increases
+      const newTimeLimit = Math.max(20, 40 - state.difficulty * 4); // Reduces time as difficulty increases
       return {
         currentColor: { r: 0, g: 0, b: 0 },
         timeLeft: newTimeLimit,

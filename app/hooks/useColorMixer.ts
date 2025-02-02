@@ -14,8 +14,6 @@ export const useColorMixer = () => {
     streak,
     startNewRound,
     resetGame,
-    winStreak,
-    updateWinStreak,
     increaseDifficulty,
     updateDifficulty,
     score,
@@ -41,17 +39,16 @@ export const useColorMixer = () => {
     const accuracy = 100 - (diff / maxDiff) * 100;
 
     // Thresholds for different accuracy levels
-    const perfectThreshold = 95 - difficulty * 2;
-    const goodThreshold = 85 - difficulty * 2;
+    const perfectThreshold = 85 + difficulty * 2; // Starts at 85%, reaches 95% at max difficulty
+    const goodThreshold = 75 + difficulty * 2; // Starts at 75%, reaches 85% at max difficulty
 
     if (accuracy >= perfectThreshold) {
       // "Perfect" guess
       updateStreak(streak + 1);
-      updateWinStreak(1);
       updateLatestAccuracy("Perfect!");
 
-      // Increase difficulty every 3rd win streak
-      if (winStreak > 0 && winStreak % 3 === 0) {
+      // Increase difficulty every 5 perfect guesses
+      if (streak != 0 && streak % 5 === 0) {
         increaseDifficulty();
       }
 
@@ -69,14 +66,14 @@ export const useColorMixer = () => {
     } else if (accuracy >= goodThreshold) {
       // Good guess
       updateStreak(streak + 1);
-      updateWinStreak(1);
       updateLatestAccuracy("Good!");
 
       setTimeout(() => {
         updateScore(5);
       }, TRANSITION_DURATION * 3);
 
-      if (winStreak > 0 && winStreak % 5 === 0) {
+      // Increase difficulty every 5 good guesses
+      if (streak != 0 && streak % 5 === 0) {
         increaseDifficulty();
       }
 
@@ -90,13 +87,11 @@ export const useColorMixer = () => {
     } else {
       // Incorrect guess
       updateStreak(0);
-      updateWinStreak(winStreak - winStreak);
-      updateLosingStreak(1);
-      // updateDifficulty(0);
+      updateLosingStreak(losingStreak + 1);
       updateLatestAccuracy("Missed...");
 
       setTimeout(() => {
-        updateScore(score === 0 ? 0 : -1);
+        updateScore(score === 0 ? 0 : -1 * (difficulty * 2));
       }, TRANSITION_DURATION * 3);
 
       setTimeout(() => {
@@ -125,7 +120,7 @@ export const useColorMixer = () => {
     }, TRANSITION_DURATION * 2);
 
     // Reset game if losing streak reaches 3
-    if (losingStreak === 3) {
+    if (losingStreak >= 2) {
       setTimeout(() => {
         resetGame();
         updateDifficulty(0);

@@ -39,7 +39,7 @@ export default function Home() {
       case "playing":
         // transition component is scoped to cover the game container only
         return (
-          <div className="w-screen h-screen relative">
+          <div className="container max-w-full h-screen relative">
             {transitioning && <TransitionScreen accuracy={latestAccuracy} />}
             <GameContainer />
           </div>

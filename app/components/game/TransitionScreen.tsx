@@ -116,7 +116,7 @@ const TransitionScreen = memo(
         );
       }
 
-      console.log(phase);
+      // console.log(phase);
       return () => {
         timeouts.forEach(clearTimeout);
       };

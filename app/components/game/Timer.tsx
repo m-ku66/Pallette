@@ -71,7 +71,7 @@ const Timer = ({ active }: Props) => {
         {formattedTime}
       </div>
       <Progress
-        value={(timeLeft / 30) * 100}
+        value={(timeLeft / 40) * 100}
         color={timeLeft < 11 ? "red" : "rgba(0, 0, 0, 0.5)"}
       />
     </motion.div>

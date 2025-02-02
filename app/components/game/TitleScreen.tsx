@@ -1,6 +1,5 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { motion } from "framer-motion";
 import useGameStore from "../../store/gameStore";
 import TitleContent from "../ui/TitleContent";
 import ModalContent from "../ui/ModalContent";
@@ -11,7 +10,6 @@ const TitleScreen = () => {
   const { startGame } = useGameStore();
   const [componentState, setComponentState] = useState<titleStates>("initial");
   const [modal, setModal] = useState(false);
-  const [clickable, setClickable] = useState(true);
 
   // Open modal on key press or click
   useEffect(() => {
@@ -27,10 +25,10 @@ const TitleScreen = () => {
       setModal(true);
     };
 
-    screen.addEventListener("keydown", handleKeyDown);
+    window.addEventListener("keydown", handleKeyDown);
     screen.addEventListener("click", handleClick);
     return () => {
-      screen.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("keydown", handleKeyDown);
       screen.removeEventListener("click", handleClick);
     };
   }, []);

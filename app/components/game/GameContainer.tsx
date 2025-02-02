@@ -33,7 +33,7 @@ const GameContainer = () => {
   if (gameState === "title") return null;
 
   return (
-    <div className="overflow-hidden container max-w-full h-screen flex justify-center items-center relative px-8 pt-4 pb-8 bg-white text-neutral-900">
+    <div className="overflow-hidden w-full h-full flex justify-center items-center relative px-8 pt-4 pb-8 bg-white text-neutral-900">
       <Character
         targetColor={useGameStore.getState().targetColor}
         characterState={characterState}
