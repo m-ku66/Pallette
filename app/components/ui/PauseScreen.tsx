@@ -23,7 +23,6 @@ const PauseOverlay = () => {
             className="text-[3rem] font-bold cursor-pointer group"
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
-            onClick={() => setIsPaused(false)}
           >
             <div className="flex gap-4 items-center">
               <RollingText

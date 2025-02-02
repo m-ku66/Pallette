@@ -4,7 +4,7 @@ export interface RGB {
   b: number;
 }
 
-export type GameState = "title" | "playing" | "gameOver";
+export type GameState = "title" | "cutscene" | "playing" | "gameOver";
 
 export interface GameStore {
   score: number;
@@ -29,3 +29,5 @@ export interface CharacterState {
 }
 
 export const TRANSITION_DURATION = 1100;
+
+export type titleStates = "initial" | "cutscene";

@@ -14,6 +14,7 @@ export default function Home() {
   const [transitioning, setTransitioning] = useState(false);
   const isFirstRender = useIsFirstRender();
 
+  // useEffect to handle transitions between rounds in the playing state of the game
   useEffect(() => {
     if (!isFirstRender) {
       setTransitioning(true);
@@ -26,6 +27,11 @@ export default function Home() {
     }
   }, [streak, losingStreak]);
 
+  /**
+   *
+   * @param state game state
+   * @returns component to render based on the current game state
+   */
   const renderScreen = (state: string) => {
     switch (state) {
       case "title":
