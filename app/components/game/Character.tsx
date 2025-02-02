@@ -124,11 +124,14 @@ const Character = ({
         repeatType: "reverse",
         ease: "easeInOut",
       }}
-      className="z-[10] w-[400px] h-[400px] bg-transparent absolute left-5 bottom-0 origin-bottom"
+      className="z-[10] w-[400px] h-[400px] bg-transparent absolute left-5 bottom-0 origin-bottom select-none"
       onClick={() => {
         clickable && handleClick();
       }}
       style={{ cursor: clickable ? "pointer" : "default", scale: 1 }}
+      onContextMenuCapture={(e) => {
+        e.preventDefault();
+      }}
     >
       {/* BACK HAIR */}
       <motion.div className="absolute z-[10]">

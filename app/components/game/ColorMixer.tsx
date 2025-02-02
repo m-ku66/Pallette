@@ -8,6 +8,7 @@ import { CircularSlider } from "./CircularSlider";
 import { ColorDisplay } from "./ColorDisplay";
 import { SubmitButton } from "./SubmitButton";
 import { CharacterState } from "@/app/types";
+import { TRANSITION_DURATION } from "@/app/types";
 
 interface ColorMixerProps {
   size?: number;
@@ -20,6 +21,7 @@ const ColorMixer: React.FC<ColorMixerProps> = React.memo(
   ({ size = 400, currentColor, setCurrentColor, setCharacterState }) => {
     const setActiveChannel = useGameStore((state) => state.setActiveChannel);
     const { isSubmitting, handleSubmitGuess } = useColorMixer();
+    const { updateSubmissionFlag } = useGameStore();
 
     const handleColorChange = (color: keyof RGB, value: number): void => {
       setCurrentColor((prev) => ({
@@ -43,7 +45,11 @@ const ColorMixer: React.FC<ColorMixerProps> = React.memo(
     );
 
     const handleSubmit = () => {
+      updateSubmissionFlag(true);
       handleSubmitGuess(currentColor, setCurrentColor, setCharacterState);
+      setTimeout(() => {
+        updateSubmissionFlag(false);
+      }, TRANSITION_DURATION * 3 + 100);
     };
 
     return (
@@ -67,7 +73,7 @@ const ColorMixer: React.FC<ColorMixerProps> = React.memo(
                 value={currentColor[channel]}
                 onChange={(value) => handleColorChange(channel, value)}
                 color={sliderColors[channel]}
-                radius={size / (2.15 + index * 0.20)}
+                radius={size / (2.15 + index * 0.2)}
                 size={size}
                 channel={channel}
                 setActiveChannel={setActiveChannel}

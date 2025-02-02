@@ -13,7 +13,7 @@ import { CharacterState } from "../../types/index";
 import { RGB } from "../../types/index";
 
 const GameContainer = () => {
-  const { gameState, generateTargetColor } = useGameStore();
+  const { gameState, generateTargetColor, submissionFlag } = useGameStore();
   const [currentColor, setCurrentColor] = useState<RGB>({
     r: 0,
     g: 0,
@@ -40,8 +40,12 @@ const GameContainer = () => {
         setCharacterState={setCharacterState}
       />
       <div className="w-[30%] h-full flex flex-col items-start justify-between">
-        Timer
-        {/* <Timer /> */}
+        {/* Timer */}
+        {submissionFlag ? (
+          <span className="text-transparent">Timer</span>
+        ) : (
+          <Timer active />
+        )}
         <SvgDeco direction="left" score={false} />
       </div>
 

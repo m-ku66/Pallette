@@ -4,7 +4,7 @@ export interface RGB {
   b: number;
 }
 
-export type GameState = "title" | "playing" | "paused" | "gameOver";
+export type GameState = "title" | "playing" | "gameOver";
 
 export interface GameStore {
   score: number;
@@ -18,9 +18,14 @@ export interface GameStore {
   winStreak: number;
   maxDifficulty: number;
   losingStreak: number;
+  latestAccuracy: string;
+  submissionFlag: boolean;
+  isPaused: boolean;
 }
 
 export interface CharacterState {
   emotion: "neutral" | "surprised" | "disappointed" | "happy";
   state: "neutral" | "victory" | "defeat";
 }
+
+export const TRANSITION_DURATION = 1100;

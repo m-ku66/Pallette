@@ -4,7 +4,6 @@ import { RGB, GameStore } from "../types";
 interface GameActions {
   startGame: () => void;
   endGame: () => void;
-  pauseGame: () => void;
   resumeGame: () => void;
   updateCurrentColor: (color: RGB) => void;
   generateTargetColor: () => void;
@@ -18,6 +17,9 @@ interface GameActions {
   increaseDifficulty: () => void;
   updateWinStreak: (amount: number) => void;
   updateLosingStreak: (amount: number) => void;
+  updateLatestAccuracy: (accuracy: string) => void;
+  updateSubmissionFlag: (flag: boolean) => void;
+  setIsPaused: (flag: boolean) => void;
 }
 
 const useGameStore = create<GameStore & GameActions>((set) => ({
@@ -27,12 +29,15 @@ const useGameStore = create<GameStore & GameActions>((set) => ({
   currentColor: { r: 0, g: 0, b: 0 },
   targetColor: { r: 0, g: 0, b: 0 },
   gameState: "title",
-  difficulty: 1,
+  difficulty: 0,
   streak: 0,
   activeChannel: null,
   winStreak: 0,
   maxDifficulty: 5,
   losingStreak: 0,
+  latestAccuracy: " ",
+  submissionFlag: false,
+  isPaused: false,
 
   // Actions
   startGame: () =>
@@ -40,7 +45,7 @@ const useGameStore = create<GameStore & GameActions>((set) => ({
       gameState: "playing",
       score: 0,
       timeLeft: 40,
-      difficulty: 1,
+      difficulty: 0,
       streak: 0,
       activeChannel: null,
       winStreak: 0,
@@ -48,8 +53,6 @@ const useGameStore = create<GameStore & GameActions>((set) => ({
     })),
 
   endGame: () => set(() => ({ gameState: "gameOver" })),
-
-  pauseGame: () => set(() => ({ gameState: "paused" })),
 
   resumeGame: () => set(() => ({ gameState: "playing" })),
 
@@ -78,7 +81,7 @@ const useGameStore = create<GameStore & GameActions>((set) => ({
         b: Math.floor(Math.random() * 256),
       };
 
-      // As difficulty increases, we'll make colors more varied
+      // As difficulty increases, make colors more varied
       if (state.difficulty > 1) {
         // Ensure at least one channel has a value below 100 or above 200
         const channel = Math.floor(Math.random() * 3);
@@ -93,6 +96,10 @@ const useGameStore = create<GameStore & GameActions>((set) => ({
       return { targetColor: baseColor };
     }),
 
+  updateSubmissionFlag: (flag) => set(() => ({ submissionFlag: flag })),
+
+  setIsPaused: (flag) => set(() => ({ isPaused: flag })),
+
   updateScore: (points) => set((state) => ({ score: state.score + points })),
 
   updateTimeLeft: (time) => set(() => ({ timeLeft: time })),
@@ -104,6 +111,8 @@ const useGameStore = create<GameStore & GameActions>((set) => ({
   setActiveChannel: (channel: keyof RGB | null) =>
     set(() => ({ activeChannel: channel })),
 
+  updateLatestAccuracy: (accuracy) => set(() => ({ latestAccuracy: accuracy })),
+
   resetGame: () =>
     set(() => ({
       score: 0,
@@ -111,20 +120,26 @@ const useGameStore = create<GameStore & GameActions>((set) => ({
       currentColor: { r: 0, g: 0, b: 0 },
       targetColor: { r: 0, g: 0, b: 0 },
       gameState: "title",
-      difficulty: 1,
+      difficulty: 0,
       streak: 0,
+      activeChannel: null,
+      winStreak: 0,
+      losingStreak: 0,
+      latestAccuracy: " ",
+      submissionFlag: false,
+      isPaused: false,
     })),
 
   startNewRound: () =>
     set((state) => {
-      const newTimeLimit = Math.max(20, 40 - state.difficulty * 2); // Reduces time as difficulty increases
+      const newTimeLimit = Math.max(30, 40 - state.difficulty * 4); // Reduces time as difficulty increases
       return {
         currentColor: { r: 0, g: 0, b: 0 },
         timeLeft: newTimeLimit,
         targetColor: {
-          r: Math.floor(Math.random() * 256),
-          g: Math.floor(Math.random() * 256),
-          b: Math.floor(Math.random() * 256),
+          r: Math.floor(Math.random() * 256 - state.difficulty * 10),
+          g: Math.floor(Math.random() * 256 - state.difficulty * 10),
+          b: Math.floor(Math.random() * 256) - state.difficulty * 10,
         },
       };
     }),

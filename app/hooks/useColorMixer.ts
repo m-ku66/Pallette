@@ -3,6 +3,7 @@ import { RGB } from "@/app/types";
 import useGameStore from "../store/gameStore";
 import calculateColorDifference from "../components/game/ColorCalculator";
 import { CharacterState } from "@/app/types";
+import { TRANSITION_DURATION } from "@/app/types";
 
 export const useColorMixer = () => {
   const {
@@ -20,6 +21,7 @@ export const useColorMixer = () => {
     score,
     losingStreak,
     updateLosingStreak,
+    updateLatestAccuracy,
   } = useGameStore();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -33,71 +35,103 @@ export const useColorMixer = () => {
     if (isSubmitting) return;
     setIsSubmitting(true);
 
+    // Calculate accuracy of guess
     const diff = calculateColorDifference(targetColor, currentColor);
     const maxDiff = Math.sqrt(Math.pow(255, 2) * 3);
     const accuracy = 100 - (diff / maxDiff) * 100;
 
+    // Thresholds for different accuracy levels
     const perfectThreshold = 95 - difficulty * 2;
     const goodThreshold = 85 - difficulty * 2;
 
     if (accuracy >= perfectThreshold) {
-      updateScore(10 + Math.floor(accuracy - perfectThreshold));
+      // "Perfect" guess
       updateStreak(streak + 1);
       updateWinStreak(1);
+      updateLatestAccuracy("Perfect!");
 
+      // Increase difficulty every 3rd win streak
       if (winStreak > 0 && winStreak % 3 === 0) {
         increaseDifficulty();
       }
 
-      setCharacterState((prev) => ({
-        ...prev,
-        emotion: "surprised",
-        state: "victory",
-      }));
+      setTimeout(() => {
+        updateScore(10 + Math.floor(accuracy - perfectThreshold));
+      }, TRANSITION_DURATION * 3);
+
+      setTimeout(() => {
+        setCharacterState((prev) => ({
+          ...prev,
+          emotion: "surprised",
+          state: "victory",
+        }));
+      }, TRANSITION_DURATION);
     } else if (accuracy >= goodThreshold) {
-      updateScore(5);
+      // Good guess
       updateStreak(streak + 1);
       updateWinStreak(1);
+      updateLatestAccuracy("Good!");
+
+      setTimeout(() => {
+        updateScore(5);
+      }, TRANSITION_DURATION * 3);
 
       if (winStreak > 0 && winStreak % 5 === 0) {
         increaseDifficulty();
       }
 
-      setCharacterState((prev) => ({
-        ...prev,
-        emotion: "happy",
-        state: "victory",
-      }));
+      setTimeout(() => {
+        setCharacterState((prev) => ({
+          ...prev,
+          emotion: "happy",
+          state: "victory",
+        }));
+      }, TRANSITION_DURATION);
     } else {
+      // Incorrect guess
       updateStreak(0);
       updateWinStreak(winStreak - winStreak);
-      updateScore(score === 0 ? 0 : -1);
       updateLosingStreak(1);
-      updateDifficulty(0);
-      setCharacterState((prev) => ({
-        ...prev,
-        emotion: "disappointed",
-        state: "defeat",
-      }));
+      // updateDifficulty(0);
+      updateLatestAccuracy("Missed...");
+
+      setTimeout(() => {
+        updateScore(score === 0 ? 0 : -1);
+      }, TRANSITION_DURATION * 3);
+
+      setTimeout(() => {
+        setCharacterState((prev) => ({
+          ...prev,
+          emotion: "disappointed",
+          state: "defeat",
+        }));
+      }, TRANSITION_DURATION);
     }
 
-    setCurrentColor({ r: 0, g: 0, b: 0 });
-
+    // Reset character state
     setTimeout(() => {
-      setIsSubmitting(false);
       setCharacterState((prev) => ({
         ...prev,
-        state: "neutral",
         emotion: "neutral",
+        state: "neutral",
       }));
-      startNewRound();
+    }, TRANSITION_DURATION * 4);
 
-      if (losingStreak === 3) {
+    // Transition to next round
+    setTimeout(() => {
+      setIsSubmitting(false);
+      setCurrentColor({ r: 0, g: 0, b: 0 });
+      startNewRound();
+    }, TRANSITION_DURATION * 2);
+
+    // Reset game if losing streak reaches 3
+    if (losingStreak === 3) {
+      setTimeout(() => {
         resetGame();
         updateDifficulty(0);
         location.reload();
-      }
-    }, 1000);
+      }, TRANSITION_DURATION * 3);
+    }
   };
 
   return {

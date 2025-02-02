@@ -31,7 +31,7 @@ const TitleScreen = () => {
         initial={{ opacity: 0 }}
         animate={{ opacity: [0, 0.4, 0] }}
         transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute bottom-[15%] nico text-[1rem]"
+        className="absolute bottom-[15%] nico text-[1rem] cursor-pointer"
       >
         press or tap to start
       </motion.h1>

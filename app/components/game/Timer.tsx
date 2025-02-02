@@ -1,40 +1,50 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import Progress from "../ui/Progress";
 import useGameStore from "../../store/gameStore";
+import { motion } from "framer-motion";
 
-const Timer = () => {
-  const { timeLeft, updateTimeLeft, gameState, endGame, resetGame } =
+type Props = {
+  active?: boolean;
+};
+
+const Timer = ({ active }: Props) => {
+  const { timeLeft, updateTimeLeft, gameState, endGame, resetGame, isPaused } =
     useGameStore();
   const [milliseconds, setMilliseconds] = useState(0);
+
+  const snapshotTimeRef = useRef<number | null>(null);
 
   useEffect(() => {
     let timer: NodeJS.Timeout;
     let msTimer: NodeJS.Timeout;
 
-    if (gameState === "playing" && timeLeft > 0) {
-      // Main second timer
-      timer = setInterval(() => {
-        updateTimeLeft(timeLeft - 1);
-        setMilliseconds(9); // Reset milliseconds when second changes
-      }, 1000);
+    if (!isPaused && timeLeft > 0) {
+      // If we have a snapshot, restore it
+      if (snapshotTimeRef.current !== null) {
+        updateTimeLeft(snapshotTimeRef.current);
+        snapshotTimeRef.current = null;
+      }
 
-      // Millisecond timer
+      timer = setInterval(() => updateTimeLeft(timeLeft - 1), 1000);
       msTimer = setInterval(() => {
         setMilliseconds((prev) => (prev > 0 ? prev - 1 : 9));
       }, 100);
+    } else if (isPaused) {
+      // Save current time when pausing
+      snapshotTimeRef.current = timeLeft;
     } else if (timeLeft === 0 && gameState === "playing") {
       setMilliseconds(0);
       setTimeout(() => {
         resetGame();
         endGame();
-      }, 1000);
+      }, 1500);
     }
 
     return () => {
       clearInterval(timer);
       clearInterval(msTimer);
     };
-  }, [timeLeft, gameState]);
+  }, [timeLeft, gameState, isPaused]);
 
   const formattedTime = (
     <span className="nico text-[2rem] flex items-baseline">
@@ -44,10 +54,27 @@ const Timer = () => {
   );
 
   return (
-    <div className="w-fit max-w-xs select-none">
-      <div className="flex justify-between mb-2">{formattedTime}</div>
-      <Progress value={(timeLeft / 30) * 100} color="rgba(0, 0, 0, 0.5)" />
-    </div>
+    <motion.div
+      animate={{ opacity: [0, 1] }}
+      transition={{ duration: 0.5 }}
+      className="w-fit max-w-xs select-none"
+    >
+      <div
+        className={`flex justify-between mb-2 ${
+          timeLeft < 6
+            ? "text-[#ff0000] animate-ping"
+            : timeLeft < 1
+            ? "text-[#ff0000]"
+            : ""
+        }`}
+      >
+        {formattedTime}
+      </div>
+      <Progress
+        value={(timeLeft / 30) * 100}
+        color={timeLeft < 11 ? "red" : "rgba(0, 0, 0, 0.5)"}
+      />
+    </motion.div>
   );
 };
 
