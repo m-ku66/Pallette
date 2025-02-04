@@ -53,7 +53,8 @@ const TitleScreen = () => {
 
   const renderModal = () => {
     return (
-      modal && (
+      modal &&
+      componentState === "initial" && (
         <ModalContent
           setComponentState={setComponentState}
           startGame={startGame}

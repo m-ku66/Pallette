@@ -7,12 +7,25 @@ import React, { useEffect, useState } from "react";
 import { TRANSITION_DURATION } from "./types";
 import { useIsFirstRender } from "./hooks/useIsFirstRender";
 import PauseOverlay from "./components/ui/PauseScreen";
+import BufferPage from "./components/ui/BufferPage";
 
 export default function Home() {
-  const { gameState, latestAccuracy, streak, losingStreak, isPaused } =
-    useGameStore();
+  const {
+    gameState,
+    initializeGame,
+    latestAccuracy,
+    streak,
+    losingStreak,
+    isPaused,
+  } = useGameStore();
   const [transitioning, setTransitioning] = useState(false);
   const isFirstRender = useIsFirstRender();
+  const [isWaiting, setIsWaiting] = useState(isFirstRender ? true : false);
+
+  // useEffect to initialize the game state
+  useEffect(() => {
+    initializeGame();
+  }, []);
 
   // useEffect to handle transitions between rounds in the playing state of the game
   useEffect(() => {
@@ -49,10 +62,21 @@ export default function Home() {
     }
   };
 
+  /**
+   * The reasoning for this is complicated. Basically browsers
+   * prvent autoplay of audio and video elements on the first page load
+   * so the title music won't play unless the user interacts with the page
+   * hence the buffer screen
+   * @returns component to render while waiting for the game to load
+   */
+  const renderBuffer = () => {
+    return <BufferPage setIsWaiting={setIsWaiting} />;
+  };
+
   return (
     <div className="w-screen h-screen relative">
       {isPaused && <PauseOverlay />}
-      {renderScreen(gameState)}
+      {isWaiting ? renderBuffer() : renderScreen(gameState)}
     </div>
   );
 }

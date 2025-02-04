@@ -8,6 +8,16 @@
   font-weight: normal;
 }
 
+@font-face {
+  font-family: "Montserrat";
+  src: url("/fonts/Montserrat-VariableFont_wght.ttf");
+  font-weight: normal;
+}
+
 .nico {
   font-family: "Nico-Moji";
+}
+
+.montserrat {
+  font-family: "Montserrat";
 }

@@ -1,16 +1,20 @@
 import React from "react";
 import { motion } from "framer-motion";
+import AudioController from "./AudioController";
 
 const TitleContent = () => {
   return (
     <>
+      <div className="hidden">
+        <AudioController />
+      </div>
       <motion.h1
         initial={{ opacity: 0 }}
         animate={{ opacity: [0, 0.4, 0] }}
         transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
         className="absolute bottom-[15%] nico text-[1rem] text-center cursor-pointer"
       >
-        press or tap to start
+        press or click to start
       </motion.h1>
 
       <motion.svg

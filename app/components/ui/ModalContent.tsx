@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { motion } from "framer-motion";
 import { titleStates } from "../../types";
+import useGameStore from "@/app/store/gameStore";
 
 type Props = {
   setComponentState: React.Dispatch<React.SetStateAction<titleStates>>;
@@ -15,6 +16,8 @@ const ModalContent = ({
   modal,
   setModal,
 }: Props) => {
+  const { startCutscene } = useGameStore();
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -52,7 +55,10 @@ const ModalContent = ({
             initial={{ scale: 1, opacity: 0.5 }}
             whileHover={{ scale: 1.1, opacity: 1 }}
             whileTap={{ scale: 0.9, opacity: 0.8 }}
-            onClick={() => setComponentState("cutscene")}
+            onClick={() => {
+              setComponentState("cutscene");
+              startCutscene();
+            }}
             className="bg-white text-neutral-900 rounded-lg px-4 py-2 w-[50%] drop-shadow-md outline outline-1 outline-neutral-400"
           >
             Yes

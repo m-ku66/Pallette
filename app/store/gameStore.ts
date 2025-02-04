@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { RGB, GameStore } from "../types";
 
 interface GameActions {
+  initializeGame: () => void;
   startGame: () => void;
   endGame: () => void;
   updateCurrentColor: (color: RGB) => void;
@@ -18,6 +19,7 @@ interface GameActions {
   updateLatestAccuracy: (accuracy: string) => void;
   updateSubmissionFlag: (flag: boolean) => void;
   setIsPaused: (flag: boolean) => void;
+  startCutscene: () => void;
 }
 
 const useGameStore = create<GameStore & GameActions>((set) => ({
@@ -37,6 +39,8 @@ const useGameStore = create<GameStore & GameActions>((set) => ({
   isPaused: false,
 
   // Actions
+
+  initializeGame: () => set(() => ({ gameState: "title" })),
   startGame: () =>
     set(() => ({
       gameState: "playing",
@@ -46,6 +50,11 @@ const useGameStore = create<GameStore & GameActions>((set) => ({
       streak: 0,
       activeChannel: null,
       losingStreak: 0,
+    })),
+
+  startCutscene: () =>
+    set(() => ({
+      gameState: "cutscene",
     })),
 
   endGame: () => set(() => ({ gameState: "gameOver" })),
@@ -131,7 +140,7 @@ const useGameStore = create<GameStore & GameActions>((set) => ({
 
   startNewRound: () =>
     set((state) => {
-      const newTimeLimit = Math.max(20, 40 - state.difficulty * 4); // Reduces time as difficulty increases
+      const newTimeLimit = Math.max(10, 40 - state.difficulty * 4); // Reduces time as difficulty increases
       return {
         currentColor: { r: 0, g: 0, b: 0 },
         timeLeft: newTimeLimit,

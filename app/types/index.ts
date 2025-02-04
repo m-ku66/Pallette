@@ -30,3 +30,14 @@ export interface CharacterState {
 export const TRANSITION_DURATION = 1100;
 
 export type titleStates = "initial" | "cutscene";
+
+export type CutsceneTextObject = {
+  speaker: string;
+  slide_1: {
+    line_1: string;
+    line_2: string;
+    line_3: string;
+  };
+  slide_2: {};
+  slide_3: {};
+};
