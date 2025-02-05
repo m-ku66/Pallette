@@ -39,8 +39,8 @@ export const useColorMixer = () => {
     const accuracy = 100 - (diff / maxDiff) * 100;
 
     // Thresholds for different accuracy levels
-    const perfectThreshold = 85 + difficulty * 2; // Starts at 85%, reaches 95% at max difficulty
-    const goodThreshold = 75 + difficulty * 2; // Starts at 75%, reaches 85% at max difficulty
+    const perfectThreshold = Math.min(95, 85 + difficulty * 1); // Starts at 85%, gradually reaches 95%
+    const goodThreshold = Math.min(85, 75 + difficulty * 1); // Starts at 75%, gradually reaches 85%
 
     if (accuracy >= perfectThreshold) {
       // "Perfect" guess
@@ -48,7 +48,7 @@ export const useColorMixer = () => {
       updateLatestAccuracy("Perfect!");
 
       // Increase difficulty every 5 perfect guesses
-      if (streak != 0 && streak % 5 === 0) {
+      if (streak != 0 && streak % 3 === 0) {
         increaseDifficulty();
       }
 

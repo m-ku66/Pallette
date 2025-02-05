@@ -8,6 +8,7 @@ import { TRANSITION_DURATION } from "./types";
 import { useIsFirstRender } from "./hooks/useIsFirstRender";
 import PauseOverlay from "./components/ui/PauseScreen";
 import BufferPage from "./components/ui/BufferPage";
+import GameOverScreen from "./components/game/GameOverScreen";
 
 export default function Home() {
   const {
@@ -57,14 +58,20 @@ export default function Home() {
             <GameContainer />
           </div>
         );
+      case "gameOver":
+        return (
+          <div className="container max-w-full h-screen relative">
+            <GameOverScreen />
+          </div>
+        );
       default:
         return <TitleScreen />;
     }
   };
 
   /**
-   * The reasoning for this is complicated. Basically browsers
-   * prvent autoplay of audio and video elements on the first page load
+   * The reasoning for this is complicated. Basically, browsers
+   * prevent autoplay of audio and video elements on the first page load
    * so the title music won't play unless the user interacts with the page
    * hence the buffer screen
    * @returns component to render while waiting for the game to load

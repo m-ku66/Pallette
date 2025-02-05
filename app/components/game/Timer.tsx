@@ -8,7 +8,7 @@ type Props = {
 };
 
 const Timer = ({ active }: Props) => {
-  const { timeLeft, updateTimeLeft, gameState, endGame, resetGame, isPaused } =
+  const { timeLeft, updateTimeLeft, gameState, endGame, isPaused } =
     useGameStore();
   const [milliseconds, setMilliseconds] = useState(0);
 
@@ -35,7 +35,6 @@ const Timer = ({ active }: Props) => {
     } else if (timeLeft === 0 && gameState === "playing") {
       setMilliseconds(0);
       setTimeout(() => {
-        resetGame();
         endGame();
       }, 1500);
     }

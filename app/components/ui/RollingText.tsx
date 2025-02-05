@@ -21,7 +21,6 @@ const RollingText = ({ text, duration, delay }: Props) => {
         return () => {
           resetGame();
           updateDifficulty(0);
-          location.reload();
         };
       case "RESUME":
         return () => setIsPaused(isPaused ? false : true);

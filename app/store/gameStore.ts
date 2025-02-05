@@ -32,7 +32,7 @@ const useGameStore = create<GameStore & GameActions>((set) => ({
   difficulty: 0,
   streak: 0,
   activeChannel: null,
-  maxDifficulty: 5,
+  maxDifficulty: 10,
   losingStreak: 0,
   latestAccuracy: " ",
   submissionFlag: false,
