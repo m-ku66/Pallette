@@ -20,6 +20,10 @@ export interface GameStore {
   latestAccuracy: string;
   submissionFlag: boolean;
   isPaused: boolean;
+  highScoreInfo: {
+    highScore: number;
+    streak: number;
+  };
 }
 
 export interface CharacterState {

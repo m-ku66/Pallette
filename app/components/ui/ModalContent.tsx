@@ -36,8 +36,8 @@ const ModalContent = ({
           transition={{ duration: 5, repeat: Infinity }}
           className="text-[0.8rem] text-center w-[50%] mb-[10%] flex flex-col gap-2"
         >
-          <p className="whitespace-pre-line select-none">
-            {` The custscene provides lore and information about the game\n(~1 minute read)`}
+          <p className="montserrat whitespace-pre-line select-none">
+            {` The custscene provides lore and information about the game(~1 minute read)`}
           </p>
         </motion.div>
 

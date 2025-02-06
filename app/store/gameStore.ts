@@ -9,7 +9,6 @@ interface GameActions {
   generateTargetColor: () => void;
   updateScore: (points: number) => void;
   updateTimeLeft: (time: number) => void;
-  updateDifficulty: (level: number) => void;
   updateStreak: (streak: number) => void;
   setActiveChannel: (channel: keyof RGB | null) => void;
   resetGame: () => void;
@@ -20,6 +19,7 @@ interface GameActions {
   updateSubmissionFlag: (flag: boolean) => void;
   setIsPaused: (flag: boolean) => void;
   startCutscene: () => void;
+  updateHighScoreInfo: (score: number, streak: number) => void;
 }
 
 const useGameStore = create<GameStore & GameActions>((set) => ({
@@ -37,6 +37,7 @@ const useGameStore = create<GameStore & GameActions>((set) => ({
   latestAccuracy: " ",
   submissionFlag: false,
   isPaused: false,
+  highScoreInfo: { highScore: 0, streak: 0 },
 
   // Actions
 
@@ -113,8 +114,6 @@ const useGameStore = create<GameStore & GameActions>((set) => ({
 
   updateTimeLeft: (time) => set(() => ({ timeLeft: time })),
 
-  updateDifficulty: (level) => set(() => ({ difficulty: level })),
-
   updateStreak: (streak) => set(() => ({ streak })),
 
   setActiveChannel: (channel: keyof RGB | null) =>
@@ -137,6 +136,9 @@ const useGameStore = create<GameStore & GameActions>((set) => ({
       submissionFlag: false,
       isPaused: false,
     })),
+
+  updateHighScoreInfo: (score, streak) =>
+    set(() => ({ highScoreInfo: { highScore: score, streak } })),
 
   startNewRound: () =>
     set((state) => {

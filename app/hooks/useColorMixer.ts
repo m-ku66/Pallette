@@ -13,13 +13,13 @@ export const useColorMixer = () => {
     updateStreak,
     streak,
     startNewRound,
-    resetGame,
     increaseDifficulty,
-    updateDifficulty,
     score,
     losingStreak,
     updateLosingStreak,
     updateLatestAccuracy,
+    endGame,
+    updateHighScoreInfo,
   } = useGameStore();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -122,9 +122,8 @@ export const useColorMixer = () => {
     // Reset game if losing streak reaches 3
     if (losingStreak >= 2) {
       setTimeout(() => {
-        resetGame();
-        updateDifficulty(0);
-        location.reload();
+        updateHighScoreInfo(score, streak);
+        endGame();
       }, TRANSITION_DURATION * 3);
     }
   };

@@ -81,7 +81,15 @@ export default function Home() {
   };
 
   return (
-    <div className="w-screen h-screen relative">
+    <div
+      style={{
+        boxShadow:
+          gameState === "title"
+            ? ""
+            : "0px 0px 20px 20px rgba(0, 0, 0, 0.25) inset",
+      }}
+      className="w-screen h-screen relative"
+    >
       {isPaused && <PauseOverlay />}
       {isWaiting ? renderBuffer() : renderScreen(gameState)}
     </div>
