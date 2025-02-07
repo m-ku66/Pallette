@@ -15,6 +15,11 @@
 
 // export default eslintConfig;
 
+/**If any game errors or bugs are seemingly impossible to resolve, consider
+ * turning standard rules back on and solving any rule conflicts that 
+ * come up
+ */
+
 
 import { dirname } from "path";
 import { fileURLToPath } from "url";
