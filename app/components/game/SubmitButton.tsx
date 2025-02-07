@@ -10,17 +10,7 @@ interface SubmitButtonProps {
 }
 
 export const SubmitButton = React.memo(
-  ({
-    size,
-    isSubmitting,
-    currentColor,
-    onSubmit,
-  }: {
-    size: number;
-    isSubmitting: boolean;
-    currentColor: RGB;
-    onSubmit: () => void;
-  }) => {
+  ({ size, isSubmitting, currentColor, onSubmit }: SubmitButtonProps) => {
     const diamondSize = size / 14;
 
     return (

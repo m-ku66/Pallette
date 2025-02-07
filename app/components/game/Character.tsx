@@ -126,7 +126,7 @@ const Character = ({
       }}
       className="z-[10] w-[400px] h-[400px] bg-transparent absolute left-5 bottom-0 origin-bottom select-none"
       onClick={() => {
-        clickable && handleClick();
+        clickable ? handleClick() : () => {};
       }}
       style={{ cursor: clickable ? "pointer" : "default", scale: 1 }}
       onContextMenuCapture={(e) => {

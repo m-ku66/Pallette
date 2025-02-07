@@ -1,8 +1,8 @@
-import useGameStore from "@/app/store/gameStore";
 import { motion } from "framer-motion";
 import AudioController from "../../ui/AudioController";
 import { useEffect, useState } from "react";
 import TextReveal from "./TextReveal";
+import Image from "next/image";
 
 type UIContainerProps = {
   textInput: any;
@@ -80,7 +80,7 @@ const UIContainer = ({
     };
     window.addEventListener("keydown", handlePress);
     return () => window.removeEventListener("keydown", handlePress);
-  }, [sceneNumber, sceneProgress]);
+  }, [sceneNumber, sceneProgress, setCurrentSlide, setModal]);
 
   return (
     <motion.div
@@ -107,7 +107,13 @@ const UIContainer = ({
           onClick={() => location.reload()}
           className="flex items-center gap-2 cursor-pointer"
         >
-          <img src={"/return.svg"} className="w-4 h-4" />
+          <Image
+            src={"/return.svg"}
+            alt="return"
+            width={0}
+            height={0}
+            className="w-4 h-4"
+          />
           <p>Back to title</p>
         </motion.div>
         <motion.div

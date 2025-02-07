@@ -38,11 +38,7 @@ const PauseOverlay = () => {
               whileTap={{ scale: 0.9 }}
             >
               <div className="flex gap-4 items-center">
-                <RollingText
-                  text={option.toUpperCase()}
-                  duration={0.5}
-                  delay={0}
-                />
+                <RollingText text={option.toUpperCase()} />
                 <div className="w-4 h-4 rounded-full bg-neutral-900 opacity-0 group-hover:opacity-100 duration-300"></div>
               </div>
             </motion.li>

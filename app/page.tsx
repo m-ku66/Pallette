@@ -26,7 +26,7 @@ export default function Home() {
   // useEffect to initialize the game state
   useEffect(() => {
     initializeGame();
-  }, []);
+  }, [initializeGame]);
 
   // useEffect to handle transitions between rounds in the playing state of the game
   useEffect(() => {
@@ -39,7 +39,7 @@ export default function Home() {
 
       return () => clearTimeout(timer);
     }
-  }, [streak, losingStreak]);
+  }, [streak, losingStreak, isFirstRender]);
 
   /**
    *

@@ -30,7 +30,7 @@ const ModalContent = ({
       }, 50);
       return () => clearTimeout(timer);
     } else {
-      setIsVisible(false);
+      isVisible && setIsVisible(false);
     }
   }, [modal]);
 

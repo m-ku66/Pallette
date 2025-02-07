@@ -1,14 +1,12 @@
 import React from "react";
 import useGameStore from "@/app/store/gameStore";
-import { motion } from "framer-motion";
+// import { motion } from "framer-motion";
 
 type Props = {
   text: string;
-  duration: number;
-  delay: number;
 };
 
-const RollingText = ({ text, duration, delay }: Props) => {
+const RollingText = ({ text }: Props) => {
   const { isPaused, setIsPaused, resetGame } = useGameStore();
 
   const itemFunction = () => {

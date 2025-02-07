@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
 import cutsceneText from "@/app/resources/cutsceneText";
 import { CutsceneTextObject } from "@/app/types";
@@ -6,6 +6,7 @@ import UIContainer from "./cutscene_parts/UIContainer";
 import ModalContent from "../ui/ModalContent";
 import { titleStates } from "@/app/types";
 import useGameStore from "@/app/store/gameStore";
+import Image from "next/image";
 
 // SCENE HOLDER COMPONENT***********************************************************************
 const SceneHolder = () => {
@@ -51,14 +52,20 @@ const ImageContainer = ({ sceneNumber }: { sceneNumber: number }) => {
       }}
       className="w-full h-full flex justify-center items-center select-none"
     >
-      <img src={src} alt={`Image ${src}`} className="w-full h-full object-" />
+      <Image
+        src={src}
+        alt={`Image ${src}`}
+        width={5000}
+        height={5000}
+        className="w-full h-full object-fill"
+      />
     </motion.div>
   );
 };
 // MAIN CUTSCENE COMPONENT***********************************************************************
 const CutScene = () => {
   const textObject = cutsceneText as CutsceneTextObject;
-  const [currentSlide, setCurrentSlide] = useState(1);
+  const [currentSlide, setCurrentSlide] = useState<number>(1);
   const [componentState, setComponentState] = useState<titleStates>("playing");
   const [modal, setModal] = useState(false);
   const { startGame } = useGameStore();

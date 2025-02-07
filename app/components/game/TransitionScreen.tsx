@@ -98,7 +98,7 @@ const TransitionScreen = memo(
         });
       }
 
-      let timeouts: NodeJS.Timeout[] = [];
+      const timeouts: NodeJS.Timeout[] = [];
 
       if (phase === "entering") {
         // Move to showing phase after panels are in

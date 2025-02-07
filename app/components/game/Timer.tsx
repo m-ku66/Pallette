@@ -7,7 +7,8 @@ type Props = {
   active?: boolean;
 };
 
-const Timer = ({ active }: Props) => {
+const Timer = ({ active = true }: Props) => {
+  if (!active) return null;
   const {
     timeLeft,
     updateTimeLeft,

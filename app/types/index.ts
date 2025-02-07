@@ -42,6 +42,14 @@ export type CutsceneTextObject = {
     line_2: string;
     line_3: string;
   };
-  slide_2: {};
-  slide_3: {};
+  slide_2: {
+    line_1: string;
+    line_2: string;
+    line_3: string;
+  };
+  slide_3: {
+    line_1: string;
+    line_2: string;
+    line_3: string;
+  };
 };

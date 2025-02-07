@@ -28,7 +28,7 @@ const GameContainer = () => {
     if (gameState === "playing") {
       generateTargetColor();
     }
-  }, [gameState]);
+  }, [gameState, generateTargetColor]);
 
   if (gameState === "title") return null;
 
