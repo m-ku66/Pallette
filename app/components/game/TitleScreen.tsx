@@ -22,6 +22,7 @@ const TitleScreen = () => {
       }
     };
     const handleClick = (event: MouseEvent) => {
+      if (!event) return;
       setModal(true);
     };
 

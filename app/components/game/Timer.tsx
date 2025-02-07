@@ -53,7 +53,16 @@ const Timer = ({ active = true }: Props) => {
       clearInterval(timer);
       clearInterval(msTimer);
     };
-  }, [timeLeft, gameState, isPaused]);
+  }, [
+    timeLeft,
+    gameState,
+    isPaused,
+    updateTimeLeft,
+    updateHighScoreInfo,
+    endGame,
+    score,
+    streak,
+  ]);
 
   const formattedTime = (
     <span className="nico text-[2rem] flex items-baseline">
