@@ -51,6 +51,7 @@ const useGameStore = create<GameStore & GameActions>((set) => ({
       streak: 0,
       activeChannel: null,
       losingStreak: 0,
+      latestAccuracy: " ",
     })),
 
   startCutscene: () =>

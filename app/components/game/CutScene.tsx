@@ -3,6 +3,9 @@ import { motion } from "framer-motion";
 import cutsceneText from "@/app/resources/cutsceneText";
 import { CutsceneTextObject } from "@/app/types";
 import UIContainer from "./cutscene_parts/UIContainer";
+import ModalContent from "../ui/ModalContent";
+import { titleStates } from "@/app/types";
+import useGameStore from "@/app/store/gameStore";
 
 // SCENE HOLDER COMPONENT***********************************************************************
 const SceneHolder = () => {
@@ -46,7 +49,7 @@ const ImageContainer = ({ sceneNumber }: { sceneNumber: number }) => {
           repeatType: "mirror",
         },
       }}
-      className="w-full h-full flex justify-center items-center"
+      className="w-full h-full flex justify-center items-center select-none"
     >
       <img src={src} alt={`Image ${src}`} className="w-full h-full object-" />
     </motion.div>
@@ -56,16 +59,39 @@ const ImageContainer = ({ sceneNumber }: { sceneNumber: number }) => {
 const CutScene = () => {
   const textObject = cutsceneText as CutsceneTextObject;
   const [currentSlide, setCurrentSlide] = useState(1);
+  const [componentState, setComponentState] = useState<titleStates>("playing");
+  const [modal, setModal] = useState(false);
+  const { startGame } = useGameStore();
+
+  const renderModal = () => {
+    return (
+      modal &&
+      componentState === "playing" && (
+        <ModalContent
+          key={componentState}
+          setComponentState={setComponentState}
+          startGame={startGame}
+          modal={modal}
+          setModal={setModal}
+          state={componentState}
+        />
+      )
+    );
+  };
+
+  // console.log(componentState);
 
   return (
     <div className="container max-w-full h-screen relative flex justify-center items-center text-white bg-black">
+      {renderModal()}
       <ImageContainer sceneNumber={currentSlide} />
       <SceneHolder />
-      <div className="absolute bottom-0 w-full bg-gradient-to-t from-black/[0.9] via-black/[0.7]  to-black/transparent h-[20%]"></div>
+      <div className="absolute bottom-0 w-full bg-gradient-to-t from-black/[0.95] via-black/[0.8]  to-black/transparent h-[20%]"></div>
       <UIContainer
         textInput={textObject}
         sceneNumber={currentSlide}
         setCurrentSlide={setCurrentSlide}
+        setModal={setModal}
       />
     </div>
   );

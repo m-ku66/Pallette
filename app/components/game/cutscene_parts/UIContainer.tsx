@@ -8,13 +8,14 @@ type UIContainerProps = {
   textInput: any;
   sceneNumber: number;
   setCurrentSlide: React.Dispatch<React.SetStateAction<number>>;
+  setModal?: React.Dispatch<React.SetStateAction<boolean>>;
 };
 const UIContainer = ({
   textInput,
   sceneNumber,
   setCurrentSlide,
+  setModal = () => {},
 }: UIContainerProps) => {
-  const { startGame } = useGameStore();
   const keywords = [
     "absence of color",
     "The Great Fade",
@@ -68,13 +69,13 @@ const UIContainer = ({
       }
 
       if (sceneProgress === 3) {
-        setCurrentSlide(sceneNumber + 1);
+        setCurrentSlide(sceneNumber === 3 ? 1 : sceneNumber + 1);
         setsceneProgress(1);
         setRenderedLines([1]);
       }
 
       if (sceneNumber === 3 && sceneProgress === 3) {
-        startGame();
+        setModal(true);
       }
     };
     window.addEventListener("keydown", handlePress);
@@ -126,10 +127,10 @@ const UIContainer = ({
           <p>Hide UI</p>
         </motion.div>
       </div>
-      <div className="flex flex-col justify-between w-full h-[25%] bg-transparent pb-2 pt-4">
+      <div className="flex flex-col justify-between w-full h-[25%] bg-transparent pb-4 pt-2">
         <div className="flex flex-col gap-4">
           <h1 className="nico text-[1.5rem]">{textInput.speaker}</h1>
-          <p className="montserrat whitespace-pre-line text-[1rem] tracking-wide opacity-80">
+          <p className="montserrat whitespace-pre-line text-[0.9rem] tracking-wide opacity-80">
             {renderedLines.includes(1) && (
               <TextReveal
                 key={`scene-${sceneNumber}-line-1`}
@@ -177,7 +178,7 @@ const UIContainer = ({
               <span className="opacity-50">|</span>
               <span
                 className="cursor-pointer opacity-50 hover:opacity-100 duration-300"
-                onClick={() => startGame()}
+                onClick={() => setModal(true)}
               >
                 Skip
               </span>

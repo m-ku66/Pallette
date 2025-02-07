@@ -9,7 +9,7 @@ type Props = {
 };
 
 const RollingText = ({ text, duration, delay }: Props) => {
-  const { isPaused, setIsPaused, resetGame, updateDifficulty } = useGameStore();
+  const { isPaused, setIsPaused, resetGame } = useGameStore();
 
   const itemFunction = () => {
     switch (text) {
@@ -20,7 +20,6 @@ const RollingText = ({ text, duration, delay }: Props) => {
       case "TITLE":
         return () => {
           resetGame();
-          updateDifficulty(0);
         };
       case "RESUME":
         return () => setIsPaused(isPaused ? false : true);

@@ -60,6 +60,7 @@ const TitleScreen = () => {
           startGame={startGame}
           modal={modal}
           setModal={setModal}
+          state={componentState}
         />
       )
     );
