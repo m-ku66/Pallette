@@ -125,13 +125,34 @@ export const CircularSlider = React.memo(
     );
 
     const normalizeAngle = useCallback(
-      (angle: number): number => {
+      (rawAngle: number): number => {
+        let angle = rawAngle;
+        // Convert negative angles to positive
+        if (angle < 0) {
+          angle += 360;
+        }
         angle = angle % 360;
-        if (angle < 0) angle += 360;
-        if (angle < startAngle) angle += 360;
-        return angle;
+
+        // For an arc from 135° to 405°, the valid raw-angle regions are:
+        // - [135, 360] which maps directly,
+        // - [0, 45] which maps to [360, 405] (by adding 360)
+        const effectiveEnd = endAngle - 360; // For 405, effectiveEnd = 45
+
+        if (angle >= startAngle && angle <= 360) {
+          // The pointer is in the "upper" part of the circle.
+          return angle;
+        } else if (angle >= 0 && angle <= effectiveEnd) {
+          // The pointer is in the lower wrapped part; map it above 360.
+          return angle + 360;
+        } else {
+          // The pointer is in the gap between 45° and 135° (i.e. outside the arc).
+          // Compute distances to the two valid boundaries:
+          const distToStart = startAngle - angle; // distance to 135°
+          const distToEnd = angle + 360 - endAngle; // distance to 405°
+          return distToStart < distToEnd ? startAngle : endAngle;
+        }
       },
-      [startAngle]
+      [startAngle, endAngle]
     );
 
     const angleToValue = useCallback(
@@ -193,6 +214,33 @@ export const CircularSlider = React.memo(
       [setActiveChannel]
     );
 
+    const handleClick = useCallback(
+      (e: React.MouseEvent) => {
+        // if (isDragging.current) return; // Ignore if we're dragging
+
+        const rect = sliderRef.current?.getBoundingClientRect();
+        if (!rect) return;
+
+        const x = e.clientX - rect.left - centerX * (rect.width / size);
+        const y = e.clientY - rect.top - centerY * (rect.height / size);
+
+        // Calculate distance from center to check if click is near the path
+        const distanceFromCenter = Math.sqrt(x * x + y * y);
+        const tolerance = 10; // pixels of tolerance around the path
+
+        if (Math.abs(distanceFromCenter - radius) <= tolerance) {
+          const angle = Math.atan2(y, x) * (180 / Math.PI);
+          const normalizedAngle = normalizeAngle(angle);
+          const newValue = angleToValue(normalizedAngle);
+
+          if (!isNaN(newValue) && isFinite(newValue)) {
+            onChange(newValue);
+          }
+        }
+      },
+      [radius, centerX, centerY, size, angleToValue, normalizeAngle, onChange]
+    );
+
     const handlePointerMove = useCallback(
       (e: PointerEvent) => {
         if (!isDragging.current || !sliderRef.current) return;
@@ -200,15 +248,19 @@ export const CircularSlider = React.memo(
         const rect = sliderRef.current.getBoundingClientRect();
         const x = e.clientX - rect.left - centerX * (rect.width / size);
         const y = e.clientY - rect.top - centerY * (rect.height / size);
-        const angle = Math.atan2(y, x) * (180 / Math.PI);
+        const rawAngle = Math.atan2(y, x) * (180 / Math.PI);
 
-        const newValue = angleToValue(angle);
-        if (!isNaN(newValue) && isFinite(newValue)) {
-          lastValidValue.current = newValue;
-          onChange(newValue);
+        const normalizedAngle = normalizeAngle(rawAngle);
+        const newValue = angleToValue(normalizedAngle);
+
+        // Clamp the final value
+        const clampedValue = Math.max(0, Math.min(255, newValue));
+
+        if (!isNaN(clampedValue) && isFinite(clampedValue)) {
+          onChange(clampedValue);
         }
       },
-      [angleToValue, centerX, centerY, onChange, size]
+      [angleToValue, centerX, centerY, normalizeAngle, onChange, size]
     );
 
     useEffect(() => {
@@ -229,6 +281,7 @@ export const CircularSlider = React.memo(
         onPointerDown={handleMouseDown}
         onPointerUp={handleMouseUp}
         onPointerLeave={handleMouseUp} // Handle the case where pointer leaves the element
+        // onClick={handleClick}
       >
         <ArcPath
           startAngle={startAngle}

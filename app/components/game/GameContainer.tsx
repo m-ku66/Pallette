@@ -44,6 +44,7 @@ const GameContainer = () => {
         {submissionFlag ? (
           <span className="text-transparent">Timer</span>
         ) : (
+          // "timer"
           <Timer active />
         )}
         <SvgDeco direction="left" score={false} />
