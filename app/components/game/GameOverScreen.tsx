@@ -7,8 +7,8 @@ const GameOverScreen = () => {
   const { highScoreInfo, resetGame, startGame } = useGameStore();
 
   const renderText = () => {
-    let score = highScoreInfo.highScore;
-    let streak = highScoreInfo.streak;
+    const score = highScoreInfo.highScore;
+    const streak = highScoreInfo.streak;
     let part1;
     let part2;
 
