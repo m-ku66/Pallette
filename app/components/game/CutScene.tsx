@@ -68,6 +68,7 @@ const CutScene = () => {
   const [currentSlide, setCurrentSlide] = useState<number>(1);
   const [componentState, setComponentState] = useState<titleStates>("playing");
   const [modal, setModal] = useState(false);
+  const [UIState, setUIState] = useState<boolean | null>(true);
   const { startGame } = useGameStore();
 
   const renderModal = () => {
@@ -94,12 +95,20 @@ const CutScene = () => {
       <ImageContainer sceneNumber={currentSlide} />
       <SceneHolder />
       <div className="absolute bottom-0 w-full bg-gradient-to-t from-black/[0.95] via-black/[0.8]  to-black/transparent h-[20%]"></div>
-      <UIContainer
-        textInput={textObject}
-        sceneNumber={currentSlide}
-        setCurrentSlide={setCurrentSlide}
-        setModal={setModal}
-      />
+      <div
+        onClick={() => setUIState(UIState === false ? true : true)}
+        className={`absolute w-full h-full ${
+          UIState ? "opacity-100" : "opacity-0"
+        }`}
+      >
+        <UIContainer
+          textInput={textObject}
+          sceneNumber={currentSlide}
+          setCurrentSlide={setCurrentSlide}
+          setModal={setModal}
+          setUIState={setUIState}
+        />
+      </div>
     </div>
   );
 };

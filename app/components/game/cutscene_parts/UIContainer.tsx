@@ -9,12 +9,14 @@ type UIContainerProps = {
   sceneNumber: number;
   setCurrentSlide: React.Dispatch<React.SetStateAction<number>>;
   setModal?: React.Dispatch<React.SetStateAction<boolean>>;
+  setUIState?: React.Dispatch<React.SetStateAction<boolean | null>>;
 };
 const UIContainer = ({
   textInput,
   sceneNumber,
   setCurrentSlide,
   setModal = () => {},
+  setUIState = () => {},
 }: UIContainerProps) => {
   const keywords = [
     "absence of color",
@@ -97,7 +99,7 @@ const UIContainer = ({
         ease: [0.87, 0, 0.13, 1],
         delay: 1,
       }}
-      className="z-[11] absolute w-full h-full flex flex-col justify-between items-center px-20 bg-transparent select-none"
+      className={`z-[20] absolute w-full h-full flex flex-col justify-between items-center px-20 bg-transparent select-none`}
     >
       <div className="nico uppercase flex justify-between items-end w-full h-[10%] bg-transparent">
         <motion.div
@@ -130,7 +132,14 @@ const UIContainer = ({
           >
             <path d="M11.9997 10.5865L16.9495 5.63672L18.3637 7.05093L13.4139 12.0007L18.3637 16.9504L16.9495 18.3646L11.9997 13.4149L7.04996 18.3646L5.63574 16.9504L10.5855 12.0007L5.63574 7.05093L7.04996 5.63672L11.9997 10.5865Z"></path>
           </svg>
-          <p>Hide UI</p>
+          <p
+            onClick={(e) => {
+              e.stopPropagation();
+              setUIState(false);
+            }}
+          >
+            Hide UI
+          </p>
         </motion.div>
       </div>
       <div className="flex flex-col justify-between w-full h-[25%] bg-transparent pb-4 pt-2">
@@ -168,7 +177,7 @@ const UIContainer = ({
           </motion.p>
           <div className="flex gap-10">
             <AudioController fillColor="white" fillOpacity={0.5} />
-            <div className="uppercase flex gap-4">
+            <div className="uppercase flex gap-4 text-[0.9rem]">
               <span
                 className="cursor-pointer opacity-50 hover:opacity-100 duration-300"
                 onClick={() =>
