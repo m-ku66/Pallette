@@ -17,7 +17,12 @@ const TitleScreen = () => {
     if (!screen) return;
 
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event) {
+      // Exclude function/media keys but allow specific keys like Enter, Shift
+      if (
+        event.code.match(
+          /^(Key|Digit|Numpad|Space|Enter|Shift|Alt|Control|Meta|Tab|Backspace)/
+        )
+      ) {
         setModal(true);
       }
     };

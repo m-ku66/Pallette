@@ -124,7 +124,7 @@ const Character = ({
         repeatType: "reverse",
         ease: "easeInOut",
       }}
-      className="z-[10] w-[400px] h-[400px] bg-transparent absolute left-5 bottom-0 origin-bottom select-none"
+      className="z-[10] lg:w-[400px] lg:h-[400px] md:w-[300px] md:h-[300px] bg-transparent absolute left-5 bottom-0 origin-bottom select-none"
       onClick={() => {
         clickable ? handleClick() : () => {};
       }}
@@ -365,7 +365,7 @@ const Character = ({
 
       {/* BUBBLE */}
       <svg
-        className="scale-75 right-0 rotate-12 absolute z-[17]"
+        className="lg:scale-75 md:scale-50 right-0 rotate-12 absolute z-[17]"
         width="140"
         height="158"
         viewBox="0 0 140 158"

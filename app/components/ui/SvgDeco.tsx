@@ -287,17 +287,56 @@ SvgPart.displayName = "SvgPart";
 const SvgDeco = React.memo(({ direction, score, fontSize }: Props) => {
   const currentScore = useGameStore((state) => state.score);
   const currentStreak = useGameStore((state) => state.streak);
-  const currentDifficulty = useGameStore((state) => state.difficulty);
   const currentLosingStreak = useGameStore((state) => state.losingStreak);
 
   return (
-    <div className="relative">
+    <div className="relative lg:scale-100 md:scale-75">
       {score && (
         <div className="flex flex-col items-center justify-center">
           <ScoreDisplay score={currentScore} fontSize={fontSize} />
-          <p>Streak: {currentStreak}</p>
-          <p>Difficulty: {currentDifficulty}</p>
-          <p>Losing Streak: {currentLosingStreak}</p>
+          <div className="z-10 nico absolute top-1/2 right-[10%] -translate-y-1/2 flex flex-col items-center gap-2">
+            {Array.from({ length: 3 }).map((_, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 0 }}
+                animate={{ opacity: [0, 1], y: [1, -1, 0] }}
+                transition={{
+                  duration: 0.5,
+                  delay: 0.1 * i,
+                  ease: [0.87, 0, 0.13, 1],
+                }}
+                style={{
+                  backgroundColor:
+                    i < currentLosingStreak
+                      ? "#D9D9D9"
+                      : currentLosingStreak === 2
+                      ? "#FF0000"
+                      : "rgba(0, 0, 0, 0.5)",
+                }}
+                className={`w-2 h-2 rounded-full ${
+                  currentLosingStreak === 2 ? "animate-ping" : ""
+                }`}
+              />
+            ))}
+          </div>
+
+          <div className="select-none absolute bottom-[12%] left-2/3 z-10 -translate-x-1/4">
+            <p className="nico text-center text-black/[0.5]">
+              STREAK:{" "}
+              <span
+                style={{
+                  color:
+                    currentStreak >= 20
+                      ? "green"
+                      : currentStreak < 20 && currentStreak >= 10
+                      ? "blue"
+                      : "black",
+                }}
+              >
+                {currentStreak}
+              </span>
+            </p>
+          </div>
         </div>
       )}
       <SvgPart direction={direction} />

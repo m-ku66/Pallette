@@ -81,17 +81,29 @@ export default function Home() {
   };
 
   return (
-    <div
-      style={{
-        boxShadow:
-          gameState === "title"
-            ? ""
-            : "0px 0px 20px 20px rgba(0, 0, 0, 0.25) inset",
-      }}
-      className="w-screen h-screen relative"
-    >
-      {isPaused && <PauseOverlay />}
-      {isWaiting ? renderBuffer() : renderScreen(gameState)}
-    </div>
+    <>
+      <div
+        style={{
+          boxShadow:
+            gameState === "title"
+              ? ""
+              : "0px 0px 20px 20px rgba(0, 0, 0, 0.25) inset",
+        }}
+        className="w-screen h-screen relative hidden md:block"
+      >
+        {isPaused && <PauseOverlay />}
+        {isWaiting ? renderBuffer() : renderScreen(gameState)}
+      </div>
+
+      <div className="md:hidden container max-w-full h-screen flex justify-center items-center">
+        <div className="flex flex-col items-center w-[50%]">
+          <h1 className="nico text-[3rem]">SORRY</h1>
+          <p className="montserrat text-center">
+            This game is not supported on mobile...Or at least not for the
+            forseeable future...It's recommended that you use a desktop browser!
+          </p>
+        </div>
+      </div>
+    </>
   );
 }

@@ -85,10 +85,12 @@ const TitleContent = () => {
     hidden: {
       pathLength: 0,
       fill: "rgba(0, 0, 0, 0)",
+      y: 10,
     },
     visible: (i: number) => ({
       pathLength: 1,
       fill: "rgba(0, 0, 0, 1)",
+      y: [10, -3, 0],
       transition: {
         pathLength: {
           duration: 0.5,
@@ -98,7 +100,12 @@ const TitleContent = () => {
         fill: {
           duration: 0.5,
           ease: [1, 0, 0.8, 1],
-          delay: i * 0.1 + 1, // Fill after stroke completes
+          delay: i * 0.1 + 0.5, // Fill after stroke completes
+        },
+        y: {
+          duration: 0.5,
+          ease: "easeInOut",
+          delay: i * 0.1, // Stagger the letters
         },
       },
     }),

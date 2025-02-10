@@ -57,7 +57,7 @@ const ImageContainer = ({ sceneNumber }: { sceneNumber: number }) => {
         alt={`Image ${src}`}
         width={5000}
         height={5000}
-        className="w-full h-full object-fill"
+        className="w-full h-full object-contain"
       />
     </motion.div>
   );

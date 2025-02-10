@@ -106,7 +106,7 @@ const ModalContent = ({
           >
             <p className="montserrat whitespace-pre-line select-none">
               {gameState === "cutscene"
-                ? "Use your Pallette to mix and match colors!"
+                ? "Use your Pallette to mix and match colors! How accurate you have to be increases with your level!"
                 : "The cutscene provides lore and information about the game (~1 minute read)"}
             </p>
           </motion.div>

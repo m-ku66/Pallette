@@ -13,7 +13,8 @@ import { CharacterState } from "../../types/index";
 import { RGB } from "../../types/index";
 
 const GameContainer = () => {
-  const { gameState, generateTargetColor, submissionFlag } = useGameStore();
+  const { gameState, generateTargetColor, submissionFlag, difficulty } =
+    useGameStore();
   const [currentColor, setCurrentColor] = useState<RGB>({
     r: 0,
     g: 0,
@@ -33,7 +34,7 @@ const GameContainer = () => {
   if (gameState === "title") return null;
 
   return (
-    <div className="overflow-hidden w-full h-full flex justify-center items-center relative px-8 pt-4 pb-8 bg-white text-neutral-900">
+    <div className="overflow-hidden w-full h-full flex justify-center items-center relative lg:px-8 md:px-4 pt-4 pb-8 bg-white text-neutral-900">
       <Character
         targetColor={useGameStore.getState().targetColor}
         characterState={characterState}
@@ -50,7 +51,7 @@ const GameContainer = () => {
         <SvgDeco direction="left" score={false} />
       </div>
 
-      <div className="w-[40%] h-full flex flex-col items-center justify-center relative">
+      <div className="w-[40%] h-full flex flex-col items-center pt-10 justify-center relative">
         <ColorMixer
           size={500}
           currentColor={currentColor}
@@ -64,6 +65,22 @@ const GameContainer = () => {
         >
           <AudioController />
         </motion.div>
+
+        <div className="select-none nico text-black/[0.5] text-[1.5rem] text-center -translate-x-1/2 absolute top-0 left-1/2">
+          LEVEL:{" "}
+          <span
+            style={{
+              color:
+                difficulty === 10
+                  ? "red"
+                  : difficulty < 10 && difficulty >= 5
+                  ? "orange"
+                  : "black",
+            }}
+          >
+            {difficulty}
+          </span>
+        </div>
       </div>
 
       <div className="w-[30%] h-full flex flex-col items-end justify-between">
