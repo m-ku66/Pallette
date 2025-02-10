@@ -99,8 +99,8 @@ export default function Home() {
         <div className="flex flex-col items-center w-[50%]">
           <h1 className="nico text-[3rem]">SORRY</h1>
           <p className="montserrat text-center">
-            This game is not supported on mobile...Or at least not for the
-            forseeable future...It's recommended that you use a desktop browser!
+            {`This game is not supported on mobile...Or at least not for the
+            forseeable future...It's recommended that you use a desktop browser!`}
           </p>
         </div>
       </div>
