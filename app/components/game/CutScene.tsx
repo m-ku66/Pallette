@@ -7,6 +7,7 @@ import ModalContent from "../ui/ModalContent";
 import { titleStates } from "@/app/types";
 import useGameStore from "@/app/store/gameStore";
 import Image from "next/image";
+import { useImagePreloader } from "@/app/hooks/useImagePreloader";
 
 // SCENE HOLDER COMPONENT***********************************************************************
 const SceneHolder = () => {
@@ -70,6 +71,34 @@ const CutScene = () => {
   const [modal, setModal] = useState(false);
   const [UIState, setUIState] = useState<boolean | null>(true);
   const { startGame } = useGameStore();
+
+  // Get total number of images from your textObject
+  const totalImages = Object.keys(textObject).length - 1;
+
+  // Create array of image paths
+  const imagePaths = Array.from(
+    { length: totalImages },
+    (_, i) => `/images/${i + 1}.png`
+  );
+
+  // Use our preloader hook
+  const { imagesPreloaded } = useImagePreloader(imagePaths);
+
+  // Don't render anything until images are loaded
+  if (!imagesPreloaded) {
+    return (
+      <div className="container max-w-full h-screen relative flex justify-center items-center text-white bg-black">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: [0, 1, 0] }}
+          transition={{ duration: 2, repeat: Infinity }}
+          className="text-2xl"
+        >
+          Loading your story...
+        </motion.div>
+      </div>
+    );
+  }
 
   const renderModal = () => {
     return (

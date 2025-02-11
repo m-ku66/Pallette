@@ -42,6 +42,14 @@ export const useColorMixer = () => {
     const perfectThreshold = Math.min(95, 85 + difficulty * 1); // Starts at 85%, gradually reaches 95%
     const goodThreshold = Math.min(85, 75 + difficulty * 1); // Starts at 75%, gradually reaches 85%
 
+    // Reset game if losing streak reaches 3
+    if (losingStreak === 2) {
+      setTimeout(() => {
+        updateHighScoreInfo(score, streak);
+        endGame();
+      }, TRANSITION_DURATION - TRANSITION_DURATION);
+    }
+
     if (accuracy >= perfectThreshold) {
       // "Perfect" guess
       updateStreak(streak + 1);
@@ -118,14 +126,6 @@ export const useColorMixer = () => {
       setCurrentColor({ r: 0, g: 0, b: 0 });
       startNewRound();
     }, TRANSITION_DURATION * 2);
-
-    // Reset game if losing streak reaches 3
-    if (losingStreak >= 2) {
-      setTimeout(() => {
-        updateHighScoreInfo(score, streak);
-        endGame();
-      }, TRANSITION_DURATION * 3);
-    }
   };
 
   return {

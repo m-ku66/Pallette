@@ -11,6 +11,32 @@ import { motion } from "framer-motion";
 import Character from "./Character";
 import { CharacterState } from "../../types/index";
 import { RGB } from "../../types/index";
+import { useImagePreloader } from "@/app/hooks/useImagePreloader";
+import LoadingScreen from "./LoadingScreen";
+
+const CHARACTER_IMAGES = [
+  "/character/back_hair.png",
+  "/character/body.png",
+  "/character/neck.png",
+  "/character/ear_l.png",
+  "/character/ear_r.png",
+  "/character/head.png",
+  "/character/pupil_l.png",
+  "/character/pupil_r.png",
+  "/character/lash_l.png",
+  "/character/lash_r.png",
+  "/character/eye_bottom_l.png",
+  "/character/eye_bottom_r.png",
+  "/character/mouth_1.png",
+  "/character/mouth_2.png",
+  "/character/mouth_3.png",
+  "/character/brow_l.png",
+  "/character/brow_r.png",
+  "/character/bangs.png",
+  "/character/necklace.png",
+  "/character/hand_1.png",
+  "/character/hand_2.png",
+];
 
 const GameContainer = () => {
   const { gameState, generateTargetColor, submissionFlag, difficulty } =
@@ -24,6 +50,7 @@ const GameContainer = () => {
     emotion: "neutral",
     state: "neutral",
   });
+  const { imagesPreloaded } = useImagePreloader(CHARACTER_IMAGES);
 
   useEffect(() => {
     if (gameState === "playing") {
@@ -32,6 +59,18 @@ const GameContainer = () => {
   }, [gameState, generateTargetColor]);
 
   if (gameState === "title") return null;
+
+  if (!imagesPreloaded) {
+    return (
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        className="w-full h-full flex justify-center items-center"
+      >
+        <LoadingScreen />
+      </motion.div>
+    );
+  }
 
   return (
     <div className="overflow-hidden w-full h-full flex justify-center items-center relative lg:px-8 md:px-4 pt-4 pb-8 bg-white text-neutral-900">
