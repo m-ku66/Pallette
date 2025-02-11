@@ -133,234 +133,239 @@ const Character = ({
         e.preventDefault();
       }}
     >
-      {/* BACK HAIR */}
-      <motion.div className="absolute z-[10]">
-        <Image
-          src={"/character/back_hair.png"}
-          width={800}
-          height={800}
-          alt=""
-        />
-      </motion.div>
-
-      {/* BODY */}
-      <motion.div className="absolute z-[11]">
-        <Image src={"/character/body.png"} width={800} height={800} alt="" />
-      </motion.div>
-
-      {/* NECK */}
-      <motion.div className="absolute z-[12]">
-        <Image src={"/character/neck.png"} width={800} height={800} alt="" />
-      </motion.div>
-
-      {/* EARS */}
-      <motion.div className="absolute w-full h-full">
-        <Image
-          src={"/character/ear_l.png"}
-          width={800}
-          height={800}
-          alt=""
-          className="absolute z-[13]"
-        />
-        <Image
-          src={"/character/ear_r.png"}
-          width={800}
-          height={800}
-          alt=""
-          className="absolute z-[13]"
-        />
-      </motion.div>
-
-      {/* HEAD */}
       <motion.div
-        animate={{ bottom: ["0%", "-1%", "0%"] }}
-        transition={{
-          duration: ANIM_DURATION,
-          repeat: Infinity,
-          repeatType: "reverse",
-          ease: "easeInOut",
-        }}
-        className="absolute w-full h-full"
+        animate={{ opacity: [0, 1] }}
+        transition={{ duration: 1, delay: 1 }}
       >
-        <Image
-          src={"/character/head.png"}
-          width={800}
-          height={800}
-          alt=""
-          className="absolute z-[14]"
-        />
-      </motion.div>
+        {/* BACK HAIR */}
+        <motion.div className="absolute z-[10]">
+          <Image
+            src={"/character/back_hair.png"}
+            width={800}
+            height={800}
+            alt=""
+          />
+        </motion.div>
 
-      {/* FACE */}
-      <motion.div
-        animate={{ bottom: ["0%", "-1%", "0%"] }}
-        transition={{
-          duration: ANIM_DURATION,
-          repeat: Infinity,
-          repeatType: "reverse",
-          ease: "easeInOut",
-        }}
-        className="absolute w-full h-full"
-      >
-        {/* PUPILS */}
+        {/* BODY */}
+        <motion.div className="absolute z-[11]">
+          <Image src={"/character/body.png"} width={800} height={800} alt="" />
+        </motion.div>
+
+        {/* NECK */}
+        <motion.div className="absolute z-[12]">
+          <Image src={"/character/neck.png"} width={800} height={800} alt="" />
+        </motion.div>
+
+        {/* EARS */}
         <motion.div className="absolute w-full h-full">
           <Image
-            src={"/character/pupil_l.png"}
+            src={"/character/ear_l.png"}
             width={800}
             height={800}
             alt=""
-            className="absolute z-[15]"
+            className="absolute z-[13]"
           />
           <Image
-            src={"/character/pupil_r.png"}
+            src={"/character/ear_r.png"}
             width={800}
             height={800}
             alt=""
-            className="absolute z-[15]"
+            className="absolute z-[13]"
           />
         </motion.div>
 
-        {/* LASHES */}
+        {/* HEAD */}
         <motion.div
-          style={{
-            bottom:
-              characterState.emotion === "surprised"
-                ? "2%"
-                : characterState.emotion === "disappointed" ||
-                  characterState.emotion === "happy"
-                ? "-2%"
-                : "0%",
+          animate={{ bottom: ["0%", "-1%", "0%"] }}
+          transition={{
+            duration: ANIM_DURATION,
+            repeat: Infinity,
+            repeatType: "reverse",
+            ease: "easeInOut",
           }}
           className="absolute w-full h-full"
         >
           <Image
-            src={"/character/lash_l.png"}
+            src={"/character/head.png"}
             width={800}
             height={800}
             alt=""
-            className="absolute z-[17]"
-          />
-          <Image
-            src={"/character/lash_r.png"}
-            width={800}
-            height={800}
-            alt=""
-            className="absolute z-[17]"
+            className="absolute z-[14]"
           />
         </motion.div>
 
-        {/* EYE BOTTOMS */}
+        {/* FACE */}
+        <motion.div
+          animate={{ bottom: ["0%", "-1%", "0%"] }}
+          transition={{
+            duration: ANIM_DURATION,
+            repeat: Infinity,
+            repeatType: "reverse",
+            ease: "easeInOut",
+          }}
+          className="absolute w-full h-full"
+        >
+          {/* PUPILS */}
+          <motion.div className="absolute w-full h-full">
+            <Image
+              src={"/character/pupil_l.png"}
+              width={800}
+              height={800}
+              alt=""
+              className="absolute z-[15]"
+            />
+            <Image
+              src={"/character/pupil_r.png"}
+              width={800}
+              height={800}
+              alt=""
+              className="absolute z-[15]"
+            />
+          </motion.div>
+
+          {/* LASHES */}
+          <motion.div
+            style={{
+              bottom:
+                characterState.emotion === "surprised"
+                  ? "2%"
+                  : characterState.emotion === "disappointed" ||
+                    characterState.emotion === "happy"
+                  ? "-2%"
+                  : "0%",
+            }}
+            className="absolute w-full h-full"
+          >
+            <Image
+              src={"/character/lash_l.png"}
+              width={800}
+              height={800}
+              alt=""
+              className="absolute z-[17]"
+            />
+            <Image
+              src={"/character/lash_r.png"}
+              width={800}
+              height={800}
+              alt=""
+              className="absolute z-[17]"
+            />
+          </motion.div>
+
+          {/* EYE BOTTOMS */}
+          <motion.div
+            style={{
+              bottom:
+                characterState.emotion === "surprised"
+                  ? "-2%"
+                  : characterState.emotion === "disappointed"
+                  ? "0%"
+                  : characterState.emotion === "happy"
+                  ? "3%"
+                  : "0%",
+            }}
+            className="absolute w-full h-full"
+          >
+            <Image
+              src={"/character/eye_bottom_l.png"}
+              width={800}
+              height={800}
+              alt=""
+              className="absolute z-[16]"
+            />
+            <Image
+              src={"/character/eye_bottom_r.png"}
+              width={800}
+              height={800}
+              alt=""
+              className="absolute z-[16]"
+            />
+          </motion.div>
+
+          {/* MOUTH */}
+          <motion.div
+            style={{ bottom: characterState.emotion === "happy" ? "1%" : "0%" }}
+            className="absolute z-[18]"
+          >
+            {renderMouth()}
+          </motion.div>
+        </motion.div>
+
+        {/* BROWS */}
         <motion.div
           style={{
             bottom:
               characterState.emotion === "surprised"
-                ? "-2%"
+                ? "5%"
                 : characterState.emotion === "disappointed"
-                ? "0%"
-                : characterState.emotion === "happy"
-                ? "3%"
+                ? "-5%"
                 : "0%",
           }}
           className="absolute w-full h-full"
         >
           <Image
-            src={"/character/eye_bottom_l.png"}
+            src={"/character/brow_l.png"}
             width={800}
             height={800}
             alt=""
-            className="absolute z-[16]"
+            className="absolute z-[18]"
           />
           <Image
-            src={"/character/eye_bottom_r.png"}
+            src={"/character/brow_r.png"}
             width={800}
             height={800}
             alt=""
-            className="absolute z-[16]"
+            className="absolute z-[18]"
           />
         </motion.div>
 
-        {/* MOUTH */}
+        {/* BANGS */}
         <motion.div
-          style={{ bottom: characterState.emotion === "happy" ? "1%" : "0%" }}
-          className="absolute z-[18]"
+          animate={{
+            bottom: ["0%", "-0.5%", "-1%", "-1%", "-1%", "-0.5%", "0%"],
+          }}
+          transition={{
+            duration: ANIM_DURATION,
+            repeat: Infinity,
+            repeatType: "mirror",
+            ease: "easeIn",
+          }}
+          className="absolute w-full h-full"
         >
-          {renderMouth()}
+          <Image
+            src={"/character/bangs.png"}
+            width={800}
+            height={800}
+            alt=""
+            className="absolute z-[17]"
+          />
         </motion.div>
-      </motion.div>
 
-      {/* BROWS */}
-      <motion.div
-        style={{
-          bottom:
-            characterState.emotion === "surprised"
-              ? "5%"
-              : characterState.emotion === "disappointed"
-              ? "-5%"
-              : "0%",
-        }}
-        className="absolute w-full h-full"
-      >
-        <Image
-          src={"/character/brow_l.png"}
-          width={800}
-          height={800}
-          alt=""
-          className="absolute z-[18]"
-        />
-        <Image
-          src={"/character/brow_r.png"}
-          width={800}
-          height={800}
-          alt=""
-          className="absolute z-[18]"
-        />
-      </motion.div>
+        {/* NECKLACE */}
+        <motion.div className="absolute w-full h-full">
+          <Image
+            src={"/character/necklace.png"}
+            width={800}
+            height={800}
+            alt=""
+            className="absolute z-[17]"
+          />
+        </motion.div>
 
-      {/* BANGS */}
-      <motion.div
-        animate={{
-          bottom: ["0%", "-0.5%", "-1%", "-1%", "-1%", "-0.5%", "0%"],
-        }}
-        transition={{
-          duration: ANIM_DURATION,
-          repeat: Infinity,
-          repeatType: "mirror",
-          ease: "easeIn",
-        }}
-        className="absolute w-full h-full"
-      >
-        <Image
-          src={"/character/bangs.png"}
-          width={800}
-          height={800}
-          alt=""
-          className="absolute z-[17]"
-        />
-      </motion.div>
-
-      {/* NECKLACE */}
-      <motion.div className="absolute w-full h-full">
-        <Image
-          src={"/character/necklace.png"}
-          width={800}
-          height={800}
-          alt=""
-          className="absolute z-[17]"
-        />
-      </motion.div>
-
-      {/* HAND */}
-      <motion.div
-        animate={{ bottom: ["0%", "-2%", "0%"] }}
-        transition={{
-          duration: ANIM_DURATION + 1,
-          repeat: Infinity,
-          repeatType: "reverse",
-          ease: "easeInOut",
-        }}
-        className="absolute w-full h-full z-[17]"
-      >
-        {renderHand()}
+        {/* HAND */}
+        <motion.div
+          animate={{ bottom: ["0%", "-2%", "0%"] }}
+          transition={{
+            duration: ANIM_DURATION + 1,
+            repeat: Infinity,
+            repeatType: "reverse",
+            ease: "easeInOut",
+          }}
+          className="absolute w-full h-full z-[17]"
+        >
+          {renderHand()}
+        </motion.div>
       </motion.div>
 
       {/* BUBBLE */}

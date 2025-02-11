@@ -121,7 +121,12 @@ const CutScene = () => {
   return (
     <div className="container max-w-full h-screen relative flex justify-center items-center text-white bg-black">
       {renderModal()}
-      <ImageContainer sceneNumber={currentSlide} />
+      <motion.div
+        animate={{ opacity: [0, 1] }}
+        transition={{ duration: 1, delay: 1 }}
+      >
+        <ImageContainer sceneNumber={currentSlide} />
+      </motion.div>
       <SceneHolder />
       <div className="absolute bottom-0 w-full bg-gradient-to-t from-black/[0.95] via-black/[0.8]  to-black/transparent h-[20%]"></div>
       <div
