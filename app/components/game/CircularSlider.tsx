@@ -73,7 +73,7 @@ const ArcPath = React.memo(
         d={pathData}
         fill="none"
         stroke={color}
-        strokeWidth={strokeWidth}
+        strokeWidth={strokeWidth + 1.5}
         strokeLinecap="round"
       />
     );
@@ -216,29 +216,113 @@ export const CircularSlider = React.memo(
 
     const handleClick = useCallback(
       (e: React.MouseEvent) => {
-        // if (isDragging.current) return; // Ignore if we're dragging
+        if (isDragging.current) return;
 
         const rect = sliderRef.current?.getBoundingClientRect();
         if (!rect) return;
 
-        const x = e.clientX - rect.left - centerX * (rect.width / size);
-        const y = e.clientY - rect.top - centerY * (rect.height / size);
-
-        // Calculate distance from center to check if click is near the path
+        const svgX = e.clientX - rect.left;
+        const svgY = e.clientY - rect.top;
+        const x = svgX - centerX * (rect.width / size);
+        const y = svgY - centerY * (rect.height / size);
         const distanceFromCenter = Math.sqrt(x * x + y * y);
-        const tolerance = 10; // pixels of tolerance around the path
 
-        if (Math.abs(distanceFromCenter - radius) <= tolerance) {
+        // Define the boundaries for each channel's zone
+        const maxRadius = radius + 30; // Outer boundary
+        const minRadius = radius - 30; // Inner boundary
+        const totalRange = maxRadius - minRadius;
+        const zoneSize = totalRange / 3; // Divide space into 3 equal zones
+
+        // Add padding to each zone (but prevent overlap)
+        // Calculate boundaries for each channel
+        const padding = 30; // Adjustable padding size
+
+        const zoneBoundaries = {
+          r: {
+            min: maxRadius - zoneSize - padding,
+            max: maxRadius + padding,
+          },
+          g: {
+            min: maxRadius - zoneSize * 2 - padding,
+            max: maxRadius - zoneSize + padding,
+          },
+          b: {
+            min: minRadius - padding,
+            max: maxRadius - zoneSize * 2 + padding,
+          },
+        };
+
+        // Ensure zones don't overlap by clamping their boundaries
+        const clampedZones = {
+          r: {
+            min: Math.max(zoneBoundaries.r.min, zoneBoundaries.g.max),
+            max: zoneBoundaries.r.max,
+          },
+          g: {
+            min: Math.max(zoneBoundaries.g.min, zoneBoundaries.b.max),
+            max: Math.min(zoneBoundaries.g.max, zoneBoundaries.r.min),
+          },
+          b: {
+            min: zoneBoundaries.b.min,
+            max: Math.min(zoneBoundaries.b.max, zoneBoundaries.g.min),
+          },
+        };
+
+        // Check if click is within current channel's padded zone
+        const currentZone = clampedZones[channel];
+        const isInZone =
+          distanceFromCenter >= currentZone.min &&
+          distanceFromCenter <= currentZone.max;
+
+        // console.log({
+        //   channel,
+        //   distanceFromCenter,
+        //   zoneBoundaries: currentZone,
+        //   isInZone,
+        // });
+
+        if (isInZone) {
           const angle = Math.atan2(y, x) * (180 / Math.PI);
           const normalizedAngle = normalizeAngle(angle);
-          const newValue = angleToValue(normalizedAngle);
 
-          if (!isNaN(newValue) && isFinite(newValue)) {
-            onChange(newValue);
+          console.log({
+            rawAngle: angle,
+            normalizedAngle,
+            isValidAngle:
+              (normalizedAngle >= startAngle && normalizedAngle <= endAngle) ||
+              (normalizedAngle >= 0 && normalizedAngle <= endAngle - 360),
+          });
+
+          if (
+            (normalizedAngle >= startAngle && normalizedAngle <= endAngle) ||
+            (normalizedAngle >= 0 && normalizedAngle <= endAngle - 360)
+          ) {
+            const newValue = angleToValue(normalizedAngle);
+
+            if (
+              !isNaN(newValue) &&
+              isFinite(newValue) &&
+              newValue >= 0 &&
+              newValue <= 255
+            ) {
+              onChange(newValue);
+              setActiveChannel(channel);
+              setTimeout(() => setActiveChannel(null), 100);
+            }
           }
         }
       },
-      [radius, centerX, centerY, size, angleToValue, normalizeAngle, onChange]
+      [
+        radius,
+        centerX,
+        centerY,
+        size,
+        angleToValue,
+        normalizeAngle,
+        onChange,
+        channel,
+        setActiveChannel,
+      ]
     );
 
     const handlePointerMove = useCallback(
@@ -281,7 +365,7 @@ export const CircularSlider = React.memo(
         onPointerDown={handleMouseDown}
         onPointerUp={handleMouseUp}
         onPointerLeave={handleMouseUp} // Handle the case where pointer leaves the element
-        // onClick={handleClick}
+        onClick={handleClick}
       >
         <ArcPath
           startAngle={startAngle}
